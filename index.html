@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>HSTU Diary </title>
-    <meta name="theme-color" content="#8B5CF6" />
+    <meta name="theme-color" content="0f0e17" />
   <meta name="description" content="HSTU DIARY" />
   <link rel="manifest" href="manifest.json" />
   
@@ -651,7 +651,35 @@
       border-radius: 50%;
       animation: float-particle 15s infinite linear;
     }
-    
+   /* install design buttons */ 
+    .filter-bar {
+  display: flex;
+  flex-wrap: wrap; /* allow buttons to go to next line if needed */
+  gap: 10px; /* space between buttons */
+  padding: 10px;
+  justify-content: center;
+  border-radius: 8px;
+  align-items:center;
+  max-width: 100%; /* full width */
+}
+
+.filter-bar > div {
+
+  color: white;
+  padding: 8px 15px;
+  border-radius: 20px; /* pill shape */
+  font-size: 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px; /* space between icon and text */
+  transition: background-color 0.3s ease;
+  user-select: none; /* prevent text selection on click */
+}
+
+.filter-bar > div:hover {
+  background-color: #0056b3; /* darker blue on hover */
+}
     @keyframes float-particle {
       0% {
         transform: translateY(0) translateX(0);
@@ -807,8 +835,21 @@
 
     const promptHTML = `
       <div class="install-prompt">
-        <h1 class="mb-3">Install <span style="color:#e17055">HSTU DIARY </h1>
-        <p class="mb-4">Get the best experience by installing our app on your device.</p>
+        <h1 class="mb-3"><span style="color:#e17055">HSTU DIARY </h1>
+        <div class="filter-bar">
+  <div class="type-classes"><i class="bi bi-journal-bookmark"></i> Classes</div>
+  <div class="type-notice"><i class="bi bi-megaphone"></i> Notice</div>
+  <div class="type-important"><i class="bi bi-exclamation-triangle"></i> Important</div>
+  <div class="type-update"><i class="bi bi-arrow-up-circle"></i> Update</div>
+  <div class="type-assignment"><i class="bi bi-pencil-square"></i> Assignment</div>
+  <div class="type-exam"><i class="bi bi-file-earmark-text"></i> Exam</div>
+  <div class="type-resources"><i class="bi bi-folder2-open"></i> Resources</div>
+  <div class="type-event"><i class="bi bi-calendar-event"></i> Event</div>
+  <div class="type-tips"><i class="bi bi-lightbulb"></i> Tips</div>
+  <div class="type-world"><i class="bi bi-globe"></i> World</div>
+  <div class="type-news"><i class="bi bi-newspaper"></i> News</div>
+</div>
+        <p class="mb-4">Get the best experience by installing our app on your device (Use Chrome Browser) </p>
         <button id="install-button" class="btn btn-light btn-lg text-dark fw-bold">Install Now</button>
       </div>
     `;
