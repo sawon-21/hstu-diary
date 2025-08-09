@@ -598,7 +598,7 @@
     }
 /*Install Promt */
     .install-prompt {
-      position: ;
+      position:fixed;
       top: 0;
       left: 0;
       right: 0;
@@ -938,11 +938,21 @@
   const lightboxImg = document.getElementById('lightbox-img');
   const lightboxClose = document.querySelector('.lightbox-close');
   const particlesContainer = document.getElementById('particles');
+  const offlinePopup = document.getElementById('offlinePopup');
 
+  // Global variables
   let posts = [];
   let currentFilter = 'all';
   let showOnlyNew = false;
-  let userReactions = JSON.parse(localStorage.getItem('postReactions')) || {};
+  let userReactions = {};
+  let userId = localStorage.getItem('userId') || generateUserId();
+
+  // Generate a unique user ID for reaction tracking
+  function generateUserId() {
+    const id = 'user_' + Math.random().toString(36).substr(2, 9);
+    localStorage.setItem('userId', id);
+    return id;
+  }
 
   // Create floating particles
   function createParticles() {
@@ -972,10 +982,34 @@
   // Initialize
   document.addEventListener('DOMContentLoaded', () => {
     createParticles();
+    loadUserReactions();
     loadPosts();
     setupEventListeners();
     startTitleAnimation();
+    
+    // Check online status on load
+    if (!navigator.onLine) {
+      hideReactions();
+} else {
+  hideOfflinePopup();
+  loadPosts();
+}
   });
+
+  // Load user reactions from Firebase
+  function loadUserReactions() {
+    if (!navigator.onLine) {
+      const localReactions = localStorage.getItem('userReactions');
+      userReactions = localReactions ? JSON.parse(localReactions) : {};
+      return;
+    }
+
+    database.ref(`userReactions/${userId}`).once('value', (snapshot) => {
+      const data = snapshot.val();
+      userReactions = data || {};
+      localStorage.setItem('userReactions', JSON.stringify(userReactions));
+    });
+  }
 
   // Title animation
   function startTitleAnimation() {
@@ -1017,23 +1051,40 @@
     typeEffect();
   }
 
-  // Load posts from Firebase
+  // Load posts from Firebase or localStorage
   function loadPosts() {
-    database.ref('posts').on('value', (snapshot) => {
-      const data = snapshot.val();
-      if (data) {
-        posts = Object.keys(data).map(key => ({
-          id: key,
-          ...data[key],
-          likes: data[key].likes || 0,
-          dislikes: data[key].dislikes || 0
-        }));
+    if (navigator.onLine) {
+      database.ref('posts').on('value', (snapshot) => {
+        const data = snapshot.val();
+        if (data) {
+          localStorage.setItem('offlinePosts', JSON.stringify(data));
+          posts = formatPosts(data);
+          renderPosts();
+        } else {
+          posts = [];
+          renderPosts();
+        }
+      });
+    } else {
+      const offlineData = localStorage.getItem('offlinePosts');
+      if (offlineData) {
+        posts = formatPosts(JSON.parse(offlineData));
         renderPosts();
       } else {
         posts = [];
         renderPosts();
       }
-    });
+    }
+  }
+
+  // Format Firebase object to array
+  function formatPosts(data) {
+    return Object.keys(data).map(key => ({
+      id: key,
+      ...data[key],
+      likes: data[key].likes || 0,
+      dislikes: data[key].dislikes || 0
+    }));
   }
 
   // Set up event listeners
@@ -1076,6 +1127,40 @@
         lightbox.classList.remove('active');
       }
     });
+    
+    // Network status events
+    window.addEventListener('offline', () => {
+      showOfflinePopup();
+      hideReactions();
+    });
+    
+    window.addEventListener('online', () => {
+      hideOfflinePopup();
+      showReactions();
+      loadPosts(); // Refresh data when coming back online
+    });
+  }
+
+  // Show/hide offline popup
+  function showOfflinePopup() {
+    offlinePopup.style.display = 'flex';
+  }
+
+  function hideOfflinePopup() {
+    offlinePopup.style.display = 'none';
+  }
+
+  // Show/hide reaction buttons
+  function hideReactions() {
+    document.querySelectorAll('.reaction-buttons').forEach(btnGroup => {
+      btnGroup.style.display = 'none';
+    });
+  }
+
+  function showReactions() {
+    document.querySelectorAll('.reaction-buttons').forEach(btnGroup => {
+      btnGroup.style.display = 'flex';
+    });
   }
 
   // Show image in lightbox
@@ -1094,7 +1179,7 @@
     const newPosts = posts
       .filter(post => new Date(post.createdAt) > twoHoursAgo)
       .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
-    .slice(0, 3);
+      .slice(0, 3);
     
     const filteredPosts = posts.filter(post => {
       // Filter by search term (includes hidden tags)
@@ -1210,19 +1295,24 @@ ${post.type === 'news' ? '<i class="bi bi-newspaper"></i>' : ''}
 
   // Handle like/dislike reactions
   function handleReaction(e) {
+    if (!navigator.onLine) {
+      alert('You need to be online to react to posts.');
+      return;
+    }
+
     const postId = e.currentTarget.dataset.id;
     const action = e.currentTarget.dataset.action;
+    const currentReaction = userReactions[postId];
     
-    // Check if user already reacted to this post
-    if (userReactions[postId]) {
-      // If clicking the same reaction again, remove it
-      if (userReactions[postId] === action) {
-        removeReaction(postId, action);
-        return;
-      }
-      
-      // If clicking different reaction, remove previous and add new
-      removeReaction(postId, userReactions[postId]);
+    // If clicking the same reaction again, remove it
+    if (currentReaction === action) {
+      removeReaction(postId, action);
+      return;
+    }
+    
+    // If user already reacted differently, first remove that reaction
+    if (currentReaction && currentReaction !== action) {
+      removeReaction(postId, currentReaction);
     }
     
     // Add new reaction
@@ -1233,17 +1323,38 @@ ${post.type === 'news' ? '<i class="bi bi-newspaper"></i>' : ''}
     // Update UI immediately
     const btn = document.querySelector(`.reaction-btn[data-id="${postId}"][data-action="${action}"]`);
     if (btn) {
+      // Clear any existing reaction UI
+      document.querySelectorAll(`.reaction-btn[data-id="${postId}"]`).forEach(b => {
+        b.classList.remove('active');
+      });
+      
+      // Set new reaction UI
       btn.classList.add('active');
       
+      // Update counts
       const countEl = btn.querySelector(`.${action}-count`);
       countEl.textContent = parseInt(countEl.textContent) + 1;
       
+      // Update opposite count if switching reactions
+      const oppositeAction = action === 'like' ? 'dislike' : 'like';
+      const oppositeBtn = document.querySelector(`.reaction-btn[data-id="${postId}"][data-action="${oppositeAction}"]`);
+      if (oppositeBtn && userReactions[postId] === oppositeAction) {
+        const oppositeCountEl = oppositeBtn.querySelector(`.${oppositeAction}-count`);
+        oppositeCountEl.textContent = parseInt(oppositeCountEl.textContent) - 1;
+      }
+      
       // Update local state
       userReactions[postId] = action;
-      localStorage.setItem('postReactions', JSON.stringify(userReactions));
+      localStorage.setItem('userReactions', JSON.stringify(userReactions));
       
       // Update Firebase
+      database.ref(`userReactions/${userId}/${postId}`).set(action);
       database.ref(`posts/${postId}/${action}s`).transaction(current => (current || 0) + 1);
+      
+      // If switching reactions, decrement the opposite count in Firebase
+      if (userReactions[postId] === oppositeAction) {
+        database.ref(`posts/${postId}/${oppositeAction}s`).transaction(current => (current || 0) - 1);
+      }
     }
   }
   
@@ -1258,9 +1369,10 @@ ${post.type === 'news' ? '<i class="bi bi-newspaper"></i>' : ''}
       
       // Update local state
       delete userReactions[postId];
-      localStorage.setItem('postReactions', JSON.stringify(userReactions));
+      localStorage.setItem('userReactions', JSON.stringify(userReactions));
       
       // Update Firebase
+      database.ref(`userReactions/${userId}/${postId}`).remove();
       database.ref(`posts/${postId}/${action}s`).transaction(current => (current || 0) - 1);
     }
   }
@@ -1335,120 +1447,6 @@ ${post.type === 'news' ? '<i class="bi bi-newspaper"></i>' : ''}
       document.body.innerHTML = "";
     }
   }, 1000);
- 
- 
- 
-  
-// ======================
-// Load posts (Online = Firebase, Offline = LocalStorage)
-// ======================
-function loadPosts() {
-  if (navigator.onLine) {
-    database.ref('posts').once('value', (snapshot) => {
-      const data = snapshot.val();
-      if (data) {
-        localStorage.setItem('offlinePosts', JSON.stringify(data)); // Save for offline
-        posts = formatPosts(data);
-        renderPosts();
-      }
-    });
-  } else {
-    const offlineData = localStorage.getItem('offlinePosts');
-    if (offlineData) {
-      posts = formatPosts(JSON.parse(offlineData));
-      renderPosts();
-    } else {
-      posts = [];
-      renderPosts();
-    }
-  }
-}
-
-// Format Firebase object to array
-function formatPosts(data) {
-  return Object.keys(data).map(key => ({
-    id: key,
-    ...data[key],
-    likes: data[key].likes || 0,
-    dislikes: data[key].dislikes || 0
-  }));
-}
-
-// ======================
-// Add reaction (Like/Dislike) - Works only online
-// ======================
-function addReaction(postId, action) {
-  if (!navigator.onLine) {
-    return;
-  }
-
-  // UI update immediately
-  const btn = document.querySelector(`.reaction-btn[data-id="${postId}"][data-action="${action}"]`);
-  if (btn) {
-    btn.classList.add('active');
-    const countEl = btn.querySelector(`.${action}-count`);
-    countEl.textContent = parseInt(countEl.textContent) + 1;
-  }
-
-  // Update Firebase
-  database.ref(`posts/${postId}/${action}s`).transaction(current => (current || 0) + 1);
-}
-
-// ======================
-// Reaction buttons hide/show
-// ======================
-function hideReactions() {
-  document.querySelectorAll('.reaction-buttons').forEach(btnGroup => {
-    btnGroup.style.display = 'none';
-  });
-}
-
-function showReactions() {
-  document.querySelectorAll('.reaction-buttons').forEach(btnGroup => {
-    btnGroup.style.display = 'flex';
-  });
-}
-
-// ======================
-// Offline Popup Control
-// ======================
-const offlinePopup = document.getElementById('offlinePopup');
-
-function showOfflinePopup() {
-  offlinePopup.style.display = 'flex';
-}
-
-function hideOfflinePopup() {
-  offlinePopup.style.display = 'none';
-}
-
-// ======================
-// Network Status Handlers
-// ======================
-window.addEventListener('offline', () => {
-  showOfflinePopup();
-  hideReactions();
-  loadPosts(); // load from LocalStorage
-});
-
-window.addEventListener('online', () => {
-  hideOfflinePopup();
-  showReactions();
-  loadPosts(); // refresh from Firebase
-});
-
-// ======================
-// Page Load Check
-// ======================
-if (!navigator.onLine) {
-  showOfflinePopup();
-  hideReactions();
-  loadPosts();
-} else {
-  hideOfflinePopup();
-  showReactions();
-  loadPosts();
-}
 </script>
 </body>
 </html>
