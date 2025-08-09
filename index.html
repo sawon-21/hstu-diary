@@ -598,7 +598,7 @@
     }
 /*Install Promt */
     .install-prompt {
-      position: fixed;
+      position: ;
       top: 0;
       left: 0;
       right: 0;
@@ -1335,8 +1335,13 @@ ${post.type === 'news' ? '<i class="bi bi-newspaper"></i>' : ''}
       document.body.innerHTML = "";
     }
   }, 1000);
+ 
+ 
+ 
   
-  // Load posts (Online = Firebase, Offline = LocalStorage)
+// ======================
+// Load posts (Online = Firebase, Offline = LocalStorage)
+// ======================
 function loadPosts() {
   if (navigator.onLine) {
     database.ref('posts').once('value', (snapshot) => {
@@ -1369,17 +1374,14 @@ function formatPosts(data) {
   }));
 }
 
-// Sync pending reactions when online
-function syncReactions() {
-  const pending = JSON.parse(localStorage.getItem('pendingReactions')) || [];
-  pending.forEach(r => {
-    database.ref(`posts/${r.id}/${r.action}s`).transaction(current => (current || 0) + 1);
-  });
-  localStorage.removeItem('pendingReactions');
-}
-
-// Add reaction (Like/Dislike)
+// ======================
+// Add reaction (Like/Dislike) - Works only online
+// ======================
 function addReaction(postId, action) {
+  if (!navigator.onLine) {
+    return;
+  }
+
   // UI update immediately
   const btn = document.querySelector(`.reaction-btn[data-id="${postId}"][data-action="${action}"]`);
   if (btn) {
@@ -1388,14 +1390,23 @@ function addReaction(postId, action) {
     countEl.textContent = parseInt(countEl.textContent) + 1;
   }
 
-  if (!navigator.onLine) {
-    let pending = JSON.parse(localStorage.getItem('pendingReactions')) || [];
-    pending.push({ id: postId, action });
-    localStorage.setItem('pendingReactions', JSON.stringify(pending));
-    return;
-  }
-
+  // Update Firebase
   database.ref(`posts/${postId}/${action}s`).transaction(current => (current || 0) + 1);
+}
+
+// ======================
+// Reaction buttons hide/show
+// ======================
+function hideReactions() {
+  document.querySelectorAll('.reaction-buttons').forEach(btnGroup => {
+    btnGroup.style.display = 'none';
+  });
+}
+
+function showReactions() {
+  document.querySelectorAll('.reaction-buttons').forEach(btnGroup => {
+    btnGroup.style.display = 'flex';
+  });
 }
 
 // ======================
@@ -1411,25 +1422,31 @@ function hideOfflinePopup() {
   offlinePopup.style.display = 'none';
 }
 
-// When offline
+// ======================
+// Network Status Handlers
+// ======================
 window.addEventListener('offline', () => {
   showOfflinePopup();
-  loadPosts(); // load from localStorage
+  hideReactions();
+  loadPosts(); // load from LocalStorage
 });
 
-// When online
 window.addEventListener('online', () => {
   hideOfflinePopup();
-  syncReactions();
+  showReactions();
   loadPosts(); // refresh from Firebase
 });
 
-// On page load
+// ======================
+// Page Load Check
+// ======================
 if (!navigator.onLine) {
   showOfflinePopup();
+  hideReactions();
   loadPosts();
 } else {
   hideOfflinePopup();
+  showReactions();
   loadPosts();
 }
 </script>
