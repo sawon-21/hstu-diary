@@ -1,4 +1,4 @@
-const CACHE_NAME = 'pwa-cache-v1';
+const CACHE_NAME = 'hstu-diary-v1';
 const urlsToCache = [
   '/',
   '/index.html',
