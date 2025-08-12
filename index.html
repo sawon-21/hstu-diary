@@ -72,7 +72,7 @@
     .app-title {
       font-weight: 400;
       letter-spacing: -0.5px;
-      background: linear-gradient(90deg, #EC4899 0%, #8B5CF6 50%, #3B82F6 100%);
+      background: linear-gradient(90deg, #EC4899 0%, yellow 50%, #3B82F6 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       font-size: 1.9rem;
@@ -680,6 +680,23 @@
 .filter-bar > div:hover {
   background-color: #0056b3; /* darker blue on hover */
 }
+.info-link{
+      border: none;
+      color: white;
+      border-radius: 20px;
+      padding: 8px 15px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 1.3rem;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      cursor: pointer;
+      font-weight: 800;
+}
+.info-link:hover{
+  color: green;
+  font-size: 1.5rem;
+}
     @keyframes float-particle {
       0% {
         transform: translateY(0) translateX(0);
@@ -769,6 +786,10 @@
           <i class="bi bi-tag-fill"></i>
           <span class="d-none d-md-inline">New</span>
         </button>
+        <a href="info-preview.html" class="info-link">
+  <i class="bi bi-info-circle-fill"></i>
+  <span class="d-none d-md-inline">Info</span>
+</a>
       </div>
     </div>
   </div>
@@ -788,17 +809,17 @@
   <button class="btn btn-outline-primary filter-btn" data-filter="important">
     <i class="bi bi-exclamation-triangle"></i> Important
   </button>
-  <button class="btn btn-outline-primary filter-btn" data-filter="update">
-    <i class="bi bi-arrow-up-circle"></i> Update
+  <button class="btn btn-outline-primary filter-btn" data-filter="resources">
+    <i class="bi bi-folder2-open"></i> Resources
   </button>
   <button class="btn btn-outline-primary filter-btn" data-filter="exam">
     <i class="bi bi-file-earmark-text"></i> Exam
   </button>
-  <button class="btn btn-outline-primary filter-btn" data-filter="resources">
-    <i class="bi bi-folder2-open"></i> Resources
-  </button>
   <button class="btn btn-outline-primary filter-btn" data-filter="assignment">
     <i class="bi bi-pencil-square"></i> Assignment
+  </button>
+    <button class="btn btn-outline-primary filter-btn" data-filter="update">
+    <i class="bi bi-arrow-up-circle"></i> Update
   </button>
   <button class="btn btn-outline-primary filter-btn" data-filter="event">
     <i class="bi bi-calendar-event"></i> Event
