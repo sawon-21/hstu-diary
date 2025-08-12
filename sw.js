@@ -1,8 +1,9 @@
-const CACHE_NAME = 'hstu~diary-v~10-08';
+const CACHE_NAME = 'hstu~diary-v~12-08';
 const urlsToCache = [
   '/',
   '/index.html',
   '/manifest.json',
+  '/info-preview.html',
 ];
 
 // Install event: cache files
