@@ -906,7 +906,7 @@
         <label for="messageInput" class="form-label">Your Review</label>
         <textarea id="messageInput" class="form-control" placeholder="Share your experience..."></textarea>
       </div>
-      <button id="postBtn" class="btn btn-primary">
+      <button id="postBtn" class="btn btn-warning">
         <i class="ri-send-plane-line"></i> Submit Review
       </button>
     </div>
@@ -1042,6 +1042,10 @@
 
       if (!message) {
         alert('Please write your review before posting.');
+        return;
+      }
+      if (!rating) {
+        alert('Please choose a rating from 1 to 5.');
         return;
       }
 
