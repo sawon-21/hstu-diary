@@ -1,4 +1,4 @@
-const CACHE_NAME = 'hstu~diary-v~1300000-08';
+const CACHE_NAME = 'hstu~diary-v~13000000-08';
 const urlsToCache = [
   '/',
   '/index.html',
