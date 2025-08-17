@@ -7,7 +7,15 @@
     <meta name="theme-color" content="#121212" />
   <meta name="description" content="HSTU DIARY" />
   <link rel="manifest" href="manifest.json" />
-  
+  <!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-DXNDZM5F51"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-DXNDZM5F51');
+</script>
   <!-- Icons -->
   <link rel="icon" type="image/png" sizes="32x32" href="icon.png" />
   <link rel="apple-touch-icon" href="icon.png" />
@@ -1484,9 +1492,19 @@ ${post.type === 'news' ? '<i class="bi bi-newspaper"></i>' : ''}
   }, 1000);
   // অনেকগুলো Discord webhook URL রাখো এখানে:
 const webhooks = [
-  "https://discord.com/api/webhooks/1398572651651403776/m7d18WV12d4Ol5wxLUyXOZ7j-dPkdbhCVai08iCg2gXJN_DakRAHD7oIE59Ckh8JuxEk"
+  "https://discord.com/api/webhooks/1405075256657580073/CNoV8OPEqf5QC08lAYPJedbCBn2KEma6kLN60brtNVCv4DKk7KUY6yxDHdhTTdUWMp5W",
+  "https://discord.com/api/webhooks/1405076125314449460/elzNtuDR-G-eueiGlwt7Pr7fs_Pb_CasHDcA0KfE9Jem9VzqiGx-VXjSzLe2O_cHpD5L",
+  "https://discord.com/api/webhooks/1405076202343108628/vu1g7AKz1pjjVeKtqAPHV0zy8extb9cwSjm0FF10mKYpekA7IRn7Fa7N65441t9v1hYx",
+  "https://discord.com/api/webhooks/1405076209326358548/2M3BtGSu6njvLv9YRcSeq7L-ANeSzfFLKOaRvuta4HIaQJbAzskpeTjmQRMTWoylb2r5",
+  "https://discord.com/api/webhooks/1405077751580590080/wo3MVLdNKIkV0C001GprNX7DdCqLoMbHOo3eRVLECIbgauLDbA5L1ici-h7uphAlHnjb",
+  "https://discord.com/api/webhooks/1405077831096205312/WVd-80rRQMJjtqOYYpEG1rPCAeXU5MYei7NY8ZJzs8XFjrbzBizFG06_6G29y5sDKucd",
+  "https://discord.com/api/webhooks/1405077917863645216/8iNB7co4BDEoH07ylyGZvMWgx-yc6QC-isNDoYhg3qwYEmar6ePgF3mRjhCDHuf0T1Q4",
+  "https://discord.com/api/webhooks/1405078003817644163/CX56wK7Pb48hWpvtjhwl0b892kEiZFhk3xRetoYu2VcN7Xcje415xt8_BnWaqG83Fe-a",
+  "https://discord.com/api/webhooks/1405078082301202432/b6MI9OPb77LafvdrDczASl8o2YIo3NiwROeav2znbqzYCkuhhOV5xuq4g5yywX4txmHr",
+  "https://discord.com/api/webhooks/1405078163746459678/Vt8UfbZF0_ZdDFn7kebvKMpej18E7Pe0Xc1DKNUjKi65TipPRfBl0ykaa2VL5YPtBo3n"
   // আরও যোগ করো তোমার webhook এখানে
 ];
+
 
 // র‍্যান্ডম webhook নিতে ফাংশন:
 function getRandomWebhook() {
