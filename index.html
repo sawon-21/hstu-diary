@@ -469,7 +469,7 @@
     }
     
     .filter-btn:hover {
-      background: rgba(255,255,255,0.2);
+      background: #0d6efd;
       transform: translateY(-2px);
       box-shadow: 0 4px 8px rgba(0,0,0,0.2);
     }
@@ -609,6 +609,27 @@
       margin-bottom: 24px;
       border-radius: 16px;
     }
+    .toast-message {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: green;
+  color: #fff;
+  padding: 10px 18px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  z-index: 99999;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.toast-message.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(-5px);
+}
 /*Install Promt */
     .install-prompt {
       position:;
@@ -796,10 +817,14 @@
     <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
       <div class="d-flex gap-2">
         <input type="text" class="search-box" id="searchInput" placeholder="Search posts...">
-        <button class="filter-btn" id="newPostsBtn">
-          <i class="bi bi-tag-fill"></i>
-          <span class="d-none d-md-inline">New</span>
-        </button>
+<button class="filter-btn" id="bookmarkBtn">
+  <i class="bi bi-bookmark-fill"></i>
+  <span class="d-none d-md-inline">Bookmarks</span>
+</button>
+<button class="filter-btn" id="weeklyPopularBtn">
+  <i class="bi bi-bar-chart-line"></i>
+  <span class="d-none d-md-inline">Weekly Popular</span>
+</button>
         <a href="info-preview.html" class="info-link">
   <i class="bi bi-info-circle-fill"></i>
   <span class="d-none d-md-inline">Info</span>
@@ -950,7 +975,7 @@
 <script>
   // Firebase configuration
   const firebaseConfig = {
-apiKey: "AIzaSyAkVqH_RnHoMSnEWtWlUVm3c0IGS04KjRI",
+    apiKey: "AIzaSyAkVqH_RnHoMSnEWtWlUVm3c0IGS04KjRI",
     authDomain: "hstu-9bb0d.firebaseapp.com",
     databaseURL: "https://hstu-9bb0d-default-rtdb.firebaseio.com",
     projectId: "hstu-9bb0d",
@@ -969,12 +994,13 @@ apiKey: "AIzaSyAkVqH_RnHoMSnEWtWlUVm3c0IGS04KjRI",
   const emptyState = document.getElementById('emptyState');
   const searchInput = document.getElementById('searchInput');
   const filterButtons = document.querySelectorAll('.filter-btn[data-filter]');
-  const newPostsBtn = document.getElementById('newPostsBtn');
   const lightbox = document.getElementById('lightbox');
   const lightboxImg = document.getElementById('lightbox-img');
   const lightboxClose = document.querySelector('.lightbox-close');
   const particlesContainer = document.getElementById('particles');
   const offlinePopup = document.getElementById('offlinePopup');
+  const bookmarkBtn = document.getElementById('bookmarkBtn');
+  const weeklyPopularBtn = document.getElementById('weeklyPopularBtn');
 
   // Global variables
   let posts = [];
@@ -982,12 +1008,80 @@ apiKey: "AIzaSyAkVqH_RnHoMSnEWtWlUVm3c0IGS04KjRI",
   let showOnlyNew = false;
   let userReactions = {};
   let userId = localStorage.getItem('userId') || generateUserId();
+  let viewedPosts = JSON.parse(localStorage.getItem('viewedPosts') || '{}');
+  let pendingViewIncrements = JSON.parse(localStorage.getItem('pendingViewIncrements') || '[]');
+  let viewObserver = null;
+  let bookmarkedPosts = JSON.parse(localStorage.getItem('bookmarkedPosts') || '[]');
 
   // Generate a unique user ID for reaction tracking
   function generateUserId() {
     const id = 'user_' + Math.random().toString(36).substr(2, 9);
     localStorage.setItem('userId', id);
     return id;
+  }
+
+  // Helper: mark & check if user viewed already
+  function hasViewed(postId) {
+    return !!viewedPosts[postId];
+  }
+  
+  function markViewed(postId) {
+    viewedPosts[postId] = Date.now();
+    localStorage.setItem('viewedPosts', JSON.stringify(viewedPosts));
+  }
+  
+  function registerView(postId) {
+    if (!postId || hasViewed(postId)) return;
+
+    // Mark locally first (so multiple triggers won't double count)
+    markViewed(postId);
+
+    // Optimistic UI: bump count instantly if element exists
+    const vc = document.querySelector(`.view-count[data-id="${postId}"]`);
+    if (vc) vc.textContent = String((parseInt(vc.textContent || '0', 10) || 0) + 1);
+
+    if (!navigator.onLine) {
+      // Queue for later
+      pendingViewIncrements.push(postId);
+      localStorage.setItem('pendingViewIncrements', JSON.stringify(pendingViewIncrements));
+      return;
+    }
+
+    // Record user->post view (to harden uniqueness on server side)
+    database.ref(`userViews/${userId}/${postId}`).set(firebase.database.ServerValue.TIMESTAMP);
+
+    // Increment post views atomically
+    database.ref(`posts/${postId}/views`).transaction(current => (current || 0) + 1);
+  }
+  
+  // Flush pending view increments
+  function flushPendingViews() {
+    if (pendingViewIncrements.length) {
+      const toFlush = [...pendingViewIncrements];
+      pendingViewIncrements = [];
+      localStorage.setItem('pendingViewIncrements', JSON.stringify(pendingViewIncrements));
+      toFlush.forEach(pid => {
+        database.ref(`userViews/${userId}/${pid}`).set(firebase.database.ServerValue.TIMESTAMP);
+        database.ref(`posts/${pid}/views`).transaction(current => (current || 0) + 1);
+      });
+    }
+  }
+
+  // Initialize view observer
+  function initViewObserver() {
+    if (viewObserver) {
+      viewObserver.disconnect();
+    }
+    
+    viewObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting && entry.intersectionRatio >= 0.5) {
+          const postId = entry.target.getAttribute('data-post-id');
+          if (postId) registerView(postId);
+          viewObserver.unobserve(entry.target); // observe once per render
+        }
+      });
+    }, { threshold: [0.5] });
   }
 
   // Create floating particles
@@ -1015,12 +1109,75 @@ apiKey: "AIzaSyAkVqH_RnHoMSnEWtWlUVm3c0IGS04KjRI",
     }
   }
 
+  // Bookmark functions
+  function toggleBookmark(postId) {
+    if (bookmarkedPosts.includes(postId)) {
+      bookmarkedPosts = bookmarkedPosts.filter(id => id !== postId);
+    } else {
+      bookmarkedPosts.push(postId);
+    }
+    localStorage.setItem('bookmarkedPosts', JSON.stringify(bookmarkedPosts));
+    renderPosts();
+  }
+function scrollToSharedPost() {
+  const urlParams = new URLSearchParams(window.location.search);
+  const postId = urlParams.get('post');
+
+  if (postId) {
+    // একটু delay দিয়ে যাতে DOM রেন্ডার হয়ে যায়
+    setTimeout(() => {
+      const target = document.querySelector(`.post-card[data-post-id="${postId}"]`);
+      if (target) {
+        target.scrollIntoView({ behavior: "smooth", block: "center" });
+
+        // Highlight effect
+        target.style.transition = "box-shadow 0.5s ease, transform 0.5s ease";
+        target.style.boxShadow = "0 0 30px 5px rgba(255, 215, 0, 0.9)";
+        target.style.transform = "scale(1.02)";
+
+        // 15 সেকেন্ড পর স্বাভাবিক অবস্থায় ফিরে যাবে
+        setTimeout(() => {
+          target.style.boxShadow = "";
+          target.style.transform = "";
+        }, 15000);
+      }
+    }, 500); // delay = half second
+  }
+}
+// Share Function
+function handleShare(postId, title) {
+  const postUrl = `${window.location.origin}${window.location.pathname}?post=${postId}`;
+  
+  if (navigator.share) {
+    navigator.share({
+      title: "HSTU Diary - " + title,
+      text: title,
+      url: postUrl
+    }).then(() => {
+      showToast("Shared successfully!");
+    }).catch(err => console.log("Share failed:", err));
+  } else {
+    navigator.clipboard.writeText(postUrl).then(() => {
+      showToast("Link copied to clipboard!");
+    }).catch(err => {
+      const textArea = document.createElement('textarea');
+      textArea.value = postUrl;
+      document.body.appendChild(textArea);
+      textArea.select();
+      document.execCommand('copy');
+      document.body.removeChild(textArea);
+      showToast("Link copied to clipboard!");
+    });
+  }
+}
+
   // Initialize
   document.addEventListener('DOMContentLoaded', () => {
     createParticles();
     loadUserReactions();
     setupEventListeners();
     startTitleAnimation();
+    initViewObserver();
     
     // Check online status on load
     if (!navigator.onLine) {
@@ -1030,6 +1187,7 @@ apiKey: "AIzaSyAkVqH_RnHoMSnEWtWlUVm3c0IGS04KjRI",
     } else {
       hideOfflinePopup();
       loadPosts();
+      flushPendingViews();
     }
   });
 
@@ -1121,13 +1279,13 @@ apiKey: "AIzaSyAkVqH_RnHoMSnEWtWlUVm3c0IGS04KjRI",
     }
   }
 
-  // Format Firebase object to array
   function formatPosts(data) {
     return Object.keys(data).map(key => ({
       id: key,
       ...data[key],
       likes: data[key].likes || 0,
-      dislikes: data[key].dislikes || 0
+      dislikes: data[key].dislikes || 0,
+      views: data[key].views || 0
     }));
   }
 
@@ -1146,12 +1304,23 @@ apiKey: "AIzaSyAkVqH_RnHoMSnEWtWlUVm3c0IGS04KjRI",
       });
     });
     
-    // New posts toggle
-    newPostsBtn.addEventListener('click', () => {
-      showOnlyNew = !showOnlyNew;
-      newPostsBtn.classList.toggle('active', showOnlyNew);
-      renderPosts();
-    });
+    // Bookmark button
+    if (bookmarkBtn) {
+      bookmarkBtn.addEventListener('click', () => {
+        filterButtons.forEach(b => b.classList.remove('active'));
+        currentFilter = 'bookmark';
+        renderPosts();
+      });
+    }
+    
+    // Weekly popular button
+    if (weeklyPopularBtn) {
+      weeklyPopularBtn.addEventListener('click', () => {
+        filterButtons.forEach(b => b.classList.remove('active'));
+        currentFilter = 'weeklyPopular';
+        renderPosts();
+      });
+    }
     
     // Lightbox
     lightboxClose.addEventListener('click', () => {
@@ -1181,6 +1350,7 @@ apiKey: "AIzaSyAkVqH_RnHoMSnEWtWlUVm3c0IGS04KjRI",
     window.addEventListener('online', () => {
       hideOfflinePopup();
       showReactions();
+      flushPendingViews();
       loadPosts(); // Refresh data when coming back online
     });
   }
@@ -1218,22 +1388,31 @@ apiKey: "AIzaSyAkVqH_RnHoMSnEWtWlUVm3c0IGS04KjRI",
     const searchTerm = searchInput.value.toLowerCase();
     const now = new Date();
     const twoHoursAgo = new Date(now.getTime() - (2 * 60 * 60 * 1000));
-    
+   // At the very end of renderPosts()
+scrollToSharedPost(); 
     // Get the newest posts from the last 2 hours
     const newPosts = posts
       .filter(post => new Date(post.createdAt) > twoHoursAgo)
       .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
       .slice(0, 3);
     
-    const filteredPosts = posts.filter(post => {
+    let filteredPosts = posts.filter(post => {
       // Filter by search term (includes hidden tags)
       const matchesSearch = 
         post.title.toLowerCase().includes(searchTerm) ||
         post.content.toLowerCase().includes(searchTerm) ||
         (post.tags && post.tags.some(tag => tag.toLowerCase().includes(searchTerm)));
       
-      // Filter by type
-      const matchesType = currentFilter === 'all' || post.type === currentFilter;
+      // Filter by type or special filters
+      let matchesType = true;
+      if (currentFilter === 'bookmark') {
+        matchesType = bookmarkedPosts.includes(post.id);
+      } else if (currentFilter === 'weeklyPopular') {
+        const oneWeekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+        matchesType = new Date(post.createdAt) > oneWeekAgo;
+      } else if (currentFilter !== 'all') {
+        matchesType = post.type === currentFilter;
+      }
       
       // Filter by new posts (only show the 3 newest from last hour if filter is on)
       const isNew = newPosts.some(newPost => newPost.id === post.id);
@@ -1242,8 +1421,12 @@ apiKey: "AIzaSyAkVqH_RnHoMSnEWtWlUVm3c0IGS04KjRI",
       return matchesSearch && matchesType && matchesNewFilter;
     });
     
-    // Sort by newest first
-    filteredPosts.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+    // Sort based on filter
+    if (currentFilter === 'weeklyPopular') {
+      filteredPosts.sort((a, b) => (b.views + b.likes) - (a.views + a.likes));
+    } else {
+      filteredPosts.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+    }
     
     postsContainer.innerHTML = '';
     
@@ -1255,9 +1438,11 @@ apiKey: "AIzaSyAkVqH_RnHoMSnEWtWlUVm3c0IGS04KjRI",
       filteredPosts.forEach(post => {
         const postDate = new Date(post.createdAt);
         const isNew = newPosts.some(newPost => newPost.id === post.id);
+        const isBookmarked = bookmarkedPosts.includes(post.id);
         
         const postEl = document.createElement('div');
         postEl.className = `post-card ${isNew ? 'new' : ''}`;
+        postEl.setAttribute('data-post-id', post.id);
         
         // Format time ago
         const timeAgo = formatTimeAgo(postDate);
@@ -1317,6 +1502,17 @@ ${post.type === 'news' ? '<i class="bi bi-newspaper"></i>' : ''}
               <i class="bi bi-hand-thumbs-down"></i>
               <span class="dislike-count">${post.dislikes || 0}</span>
             </button>
+            <div class="reaction-btn" style="pointer-events:none; opacity:.9;">
+              <i class="bi bi-eye"></i>
+              <span class="view-count" data-id="${post.id}">${post.views || 0}</span>
+            </div>
+            <button class="reaction-btn bookmark ${isBookmarked ? 'active' : ''}" 
+                    data-id="${post.id}" onclick="toggleBookmark('${post.id}')">
+              <i class="bi ${isBookmarked ? 'bi-bookmark-fill' : 'bi-bookmark'}"></i>
+            </button>
+            <button class="reaction-btn share-btn" data-id="${post.id}" data-title="${post.title.replace(/"/g, '&quot;')}">
+              <i class="bi bi-share-fill"></i>
+            </button>
           </div>
         `;
         
@@ -1325,7 +1521,18 @@ ${post.type === 'news' ? '<i class="bi bi-newspaper"></i>' : ''}
       
       // Add event listeners to reaction buttons
       document.querySelectorAll('.reaction-btn').forEach(btn => {
-        btn.addEventListener('click', handleReaction);
+        if (btn.dataset.action) { // Only like/dislike buttons
+          btn.addEventListener('click', handleReaction);
+        }
+      });
+      
+      // Add event listeners to share buttons
+      document.querySelectorAll('.share-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const postId = e.currentTarget.dataset.id;
+          const title = e.currentTarget.dataset.title;
+          handleShare(postId, title);
+        });
       });
       
       // Add event listeners to images for lightbox
@@ -1333,6 +1540,14 @@ ${post.type === 'news' ? '<i class="bi bi-newspaper"></i>' : ''}
         img.addEventListener('click', (e) => {
           showLightbox(e.currentTarget.dataset.img);
         });
+      });
+      
+      // Observe posts for view tracking
+      document.querySelectorAll('.post-card').forEach(card => {
+        const postId = card.getAttribute('data-post-id');
+        if (postId && !hasViewed(postId)) {
+          viewObserver.observe(card);
+        }
       });
     }
   }
@@ -1368,7 +1583,9 @@ ${post.type === 'news' ? '<i class="bi bi-newspaper"></i>' : ''}
     if (btn) {
       // Clear any existing reaction UI
       document.querySelectorAll(`.reaction-btn[data-id="${postId}"]`).forEach(b => {
-        b.classList.remove('active');
+        if (b.dataset.action) { // Only like/dislike buttons
+          b.classList.remove('active');
+        }
       });
       
       // Set new reaction UI
@@ -1420,29 +1637,49 @@ ${post.type === 'news' ? '<i class="bi bi-newspaper"></i>' : ''}
     }
   }
 
-  // Helper functions
+  // Helper function
+  function showToast(msg) {
+  const toast = document.createElement("div");
+  toast.className = "toast-message";
+  toast.innerText = msg;
+
+  document.body.appendChild(toast);
+
+  // show
+  setTimeout(() => {
+    toast.classList.add("show");
+  }, 50);
+
+  // hide after 2.5s
+  setTimeout(() => {
+    toast.classList.remove("show");
+    setTimeout(() => toast.remove(), 300);
+  }, 2500);
+}
   function formatTimeAgo(date) {
-    const seconds = Math.floor((new Date() - date) / 1000);
-    
+    const now = new Date();
+    const seconds = Math.floor((now - date) / 1000);
+
     if (seconds < 60) return 'just now';
-    
+
     const minutes = Math.floor(seconds / 60);
     if (minutes < 60) return `${minutes}m ago`;
-    
+
     const hours = Math.floor(minutes / 60);
     if (hours < 24) return `${hours}h ago`;
-    
+
     const days = Math.floor(hours / 24);
-    if (days < 7) return `${days}d ago`;
-    
-    const weeks = Math.floor(days / 7);
-    if (weeks < 4) return `${weeks}w ago`;
-    
-    const months = Math.floor(days / 30);
-    if (months < 12) return `${months}mo ago`;
-    
-    const years = Math.floor(days / 365);
-    return `${years}y ago`;
+
+    // If more than 7 days, return the date
+    if (days >= 7) {
+      return date.toLocaleDateString('en-GB', {
+        day: '2-digit',
+        month: 'long',
+        year: 'numeric'
+      });
+    }
+
+    return `${days}d ago`;
   }
 
   // Security measures
@@ -1480,7 +1717,6 @@ ${post.type === 'news' ? '<i class="bi bi-newspaper"></i>' : ''}
       document.body.innerHTML = "";
     }
   }, 1000);
-
 </script>
 </body>
 </html>
