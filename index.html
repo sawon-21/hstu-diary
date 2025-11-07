@@ -43,7 +43,7 @@
       --text-muted: #9CA3AF;
       --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
     }
-    
+
     body {
       background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
       color: white;
@@ -53,13 +53,13 @@
       animation: gradientShift 15s ease infinite;
       background-size: 200% 200%;
     }
-    
+
     @keyframes gradientShift {
       0% { background-position: 0% 50%; }
       50% { background-position: 100% 50%; }
       100% { background-position: 0% 50%; }
     }
-    
+
     .container {
       max-width: 1200px;
       padding: 2px;
@@ -76,7 +76,7 @@
       backdrop-filter: blur(10px);
       box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
     }
-    
+
     .app-title {
       font-weight: 400;
       letter-spacing: -0.5px;
@@ -88,13 +88,13 @@
       animation: titleGradient 8s ease infinite;
       background-size: 200% 200%;
     }
-    
+
     @keyframes titleGradient {
       0% { background-position: 0% 50%; }
       50% { background-position: 100% 50%; }
       100% { background-position: 0% 50%; }
     }
-    
+
     .post-card {
       background: rgba(31, 41, 55, 0.7);
       border-radius: 16px;
@@ -107,14 +107,14 @@
       overflow: hidden;
       backdrop-filter: blur(5px);
     }
-    
+
     .post-card:hover {
       transform: translateY(-5px);
       box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
       border-color: rgba(139, 92, 246, 0.5);
       background: rgba(31, 41, 55, 0.9);
     }
-    
+
     .post-card.new::before {
       content: '';
       position: absolute;
@@ -143,7 +143,7 @@
       box-shadow: 0 2px 10px rgba(0,0,0,0.3);
       z-index: 1;
     }
-    
+
     .post-type {
       font-size: 0.75rem;
       text-transform: uppercase;
@@ -221,7 +221,7 @@
   color: #000;  
   box-shadow: 0 4px 6px -1px rgba(55, 65, 81, 0.3);  
 }
-    
+
     .post-image-container {
       position: relative;
       width: 100%;
@@ -232,7 +232,7 @@
       transition: all 0.3s;
       box-shadow: 0 8px 15px rgba(0,0,0,0.2);
     }
-    
+
     .post-image {
       width: 100%;
       border-radius: 12px;
@@ -240,16 +240,16 @@
       object-fit: cover;
       transition: transform 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
     }
-    
+
     .post-image-container:hover {
       transform: translateY(-3px);
       box-shadow: 0 12px 20px rgba(0,0,0,0.3);
     }
-    
+
     .post-image-container:hover .post-image {
       transform: scale(1.05);
     }
-    
+
     .post-image-container::after {
       content: '\F33E';
       font-family: 'bootstrap-icons';
@@ -264,12 +264,12 @@
       transition: all 0.3s ease;
       pointer-events: none;
     }
-    
+
     .post-image-container:hover::after {
       opacity: 0.8;
       transform: translate(-50%, -50%) scale(1.2);
     }
-    
+
     .lightbox {
       position: fixed;
       top: 0;
@@ -285,12 +285,12 @@
       pointer-events: none;
       transition: opacity 0.3s ease;
     }
-    
+
     .lightbox.active {
       opacity: 1;
       pointer-events: all;
     }
-    
+
     .lightbox-img {
       max-width: 90%;
       max-height: 90%;
@@ -299,11 +299,11 @@
       transform: scale(0.9);
       transition: transform 0.3s ease;
     }
-    
+
     .lightbox.active .lightbox-img {
       transform: scale(1);
     }
-    
+
     .lightbox-close {
       position: absolute;
       top: 30px;
@@ -320,18 +320,18 @@
       justify-content: center;
       transition: all 0.2s;
     }
-    
+
     .lightbox-close:hover {
       background: rgba(255,255,255,0.2);
       transform: rotate(90deg);
     }
-    
+
     .reaction-buttons {
       display: flex;
       gap: 12px;
       margin-top: 20px;
     }
-    
+
     .reaction-btn {
       background: rgba(255,255,255,0.1);
       border: none;
@@ -348,7 +348,7 @@
       position: relative;
       overflow: hidden;
     }
-    
+
     .reaction-btn::before {
       content: '';
       position: absolute;
@@ -360,29 +360,29 @@
       transform: translateX(-100%);
       transition: transform 0.4s ease;
     }
-    
+
     .reaction-btn:hover::before {
       transform: translateX(100%);
     }
-    
+
     .reaction-btn:hover {
       background: rgba(255,255,255,0.2);
       transform: translateY(-2px);
       box-shadow: 0 4px 8px rgba(0,0,0,0.2);
     }
-    
+
     .reaction-btn.like.active {
       background: var(--success);
       color: white;
       box-shadow: 0 4px 8px rgba(16, 185, 129, 0.3);
     }
-    
+
     .reaction-btn.dislike.active {
       background: var(--danger);
       color: white;
       box-shadow: 0 4px 8px rgba(239, 68, 68, 0.3);
     }
-    
+
     .empty-state {
       background: rgba(255,255,255,0.05);
       border-radius: 16px;
@@ -393,26 +393,26 @@
       border: 1px solid rgba(255,255,255,0.1);
       animation: pulse 2s infinite;
     }
-    
+
     @keyframes pulse {
       0% { box-shadow: 0 0 0 0 rgba(139, 92, 246, 0.4); }
       70% { box-shadow: 0 0 0 10px rgba(139, 92, 246, 0); }
       100% { box-shadow: 0 0 0 0 rgba(139, 92, 246, 0); }
     }
-    
+
     .empty-state i {
       font-size: 3.5rem;
       opacity: 0.5;
       margin-bottom: 1.5rem;
       animation: float 3s ease-in-out infinite;
     }
-    
+
     @keyframes float {
       0% { transform: translateY(0px); }
       50% { transform: translateY(-10px); }
       100% { transform: translateY(0px); }
     }
-    
+
     .time-badge {
       font-size: 0.75rem;
       background: rgba(255,255,255,0.1);
@@ -423,12 +423,12 @@
       gap: 5px;
       transition: all 0.3s;
     }
-    
+
     .time-badge:hover {
       background: rgba(255,255,255,0.2);
       transform: scale(1.05);
     }
-    
+
     .search-box {
       background: rgba(255,255,255,0.1);
       border: none;
@@ -442,7 +442,7 @@
       backdrop-filter: blur(5px);
       border: 1px solid rgba(255,255,255,0.1);
     }
-    
+
     .search-box:focus {
       background: rgba(255,255,255,0.2);
       color: white;
@@ -450,7 +450,7 @@
       border: 1px solid rgba(139, 92, 246, 0.5);
       outline: none;
     }
-    
+
     .filter-btn {
       background: rgba(255,255,255,0.1);
       border: none;
@@ -467,19 +467,19 @@
       backdrop-filter: blur(5px);
       border: 1px solid rgba(255,255,255,0.1);
     }
-    
+
     .filter-btn:hover {
       background: #0d6efd;
       transform: translateY(-2px);
       box-shadow: 0 4px 8px rgba(0,0,0,0.2);
     }
-    
+
     .filter-btn.active {
       background: #0d6efd;
       box-shadow: 0 4px 6px -1px rgba(13,110,253,255);
       border-color: rgba(13,110,253,255);
     }
-    
+
     .filters-row-wrapper {
       position: sticky;
       top: 0px;
@@ -500,7 +500,7 @@
       margin: 0 5px;
       white-space: nowrap;
     }
-    
+
     .post-content {
       line-height: 1.1;
       font-size:10px;
@@ -518,7 +518,7 @@
       margin-bottom: 16px;
       flex-wrap: wrap;
     }
-    
+
     .post-title {
       font-weight: 700;
       margin-bottom: 12px;
@@ -528,7 +528,7 @@
       position: relative;
       display: inline-block;
     }
-    
+
     .post-title::after {
       content: '';
       position: absolute;
@@ -540,17 +540,17 @@
       border-radius: 3px;
       transition: width 0.3s ease;
     }
-    
+
     .post-card:hover .post-title::after {
       width: 100%;
     }
-    
+
     .post-detail-label {
       font-weight: 600;
       color: var(--primary-light);
       margin-right: 8px;
     }
-    
+
     .link-btn {
       display: inline-flex;
       align-items: center;
@@ -567,7 +567,7 @@
       position: relative;
       overflow: hidden;
     }
-    
+
     .link-btn::before {
       content: '';
       position: absolute;
@@ -578,17 +578,17 @@
       background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
       transition: all 0.5s ease;
     }
-    
+
     .link-btn:hover::before {
       left: 100%;
     }
-    
+
     .link-btn:hover {
       transform: translateY(-2px);
       box-shadow: 0 10px 15px -3px rgba(139, 92, 246, 0.4);
       color: white;
     }
-    
+
     /* Skeleton Loading */
     .skeleton {
       background: linear-gradient(90deg, rgba(255,255,255,0.1) 25%, rgba(255,255,255,0.15) 50%, rgba(255,255,255,0.1) 75%);
@@ -598,12 +598,12 @@
       backdrop-filter: blur(5px);
       border: 1px solid rgba(255,255,255,0.1);
     }
-    
+
     @keyframes shimmer {
       0% { background-position: 200% 0; }
       100% { background-position: -200% 0; }
     }
-    
+
     .skeleton-card {
       height: 150px;
       margin-bottom: 24px;
@@ -678,7 +678,7 @@
       z-index: -1;
       overflow: hidden;
     }
-    
+
     .particle {
       position: absolute;
       background: rgba(255,255,255,0.1);
@@ -747,45 +747,45 @@
         opacity: 0;
       }
     }
-    
+
     @media (max-width: 992px) {
       .container {
         padding: 10px;
       }
-      
+
       .search-box {
         max-width: 100%;
       }
     }
-    
+
     @media (max-width: 768px) {
       .post-card {
         padding: 20px;
       }
-      
+
       .header {
         padding: 0.8rem 0;
       }
-      
+
       .post-title {
         font-size: 1.3rem;
       }
-      
+
       .app-title {
         font-size: 1.5rem;
       }
     }
-    
+
     @media (max-width: 576px) {
       .post-card {
         padding: 18px;
       }
-      
+
       .post-title {
         font-size: 1.2rem;
       }
     }
-    
+
     /* Title animation cursor */
     #animatedTitle::after {
       content: "|";
@@ -827,7 +827,7 @@
 </button>
         <a href="info-preview.html" class="info-link">
   <i class="bi bi-info-circle-fill"></i>
-  <span class="d-none d-md-inline">Info</span>
+  <span class="d-none d-md-inline"></span>
 </a>
       </div>
     </div>
@@ -959,13 +959,7 @@
       });
     });
 
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('sw.js')
-          .then(() => console.log('ServiceWorker registration successful'))
-          .catch(err => console.log('ServiceWorker registration failed:', err));
-      });
-    }
+
 </script>
 
 <!-- Firebase SDK -->
@@ -1024,12 +1018,12 @@
   function hasViewed(postId) {
     return !!viewedPosts[postId];
   }
-  
+
   function markViewed(postId) {
     viewedPosts[postId] = Date.now();
     localStorage.setItem('viewedPosts', JSON.stringify(viewedPosts));
   }
-  
+
   function registerView(postId) {
     if (!postId || hasViewed(postId)) return;
 
@@ -1053,7 +1047,7 @@
     // Increment post views atomically
     database.ref(`posts/${postId}/views`).transaction(current => (current || 0) + 1);
   }
-  
+
   // Flush pending view increments
   function flushPendingViews() {
     if (pendingViewIncrements.length) {
@@ -1072,7 +1066,7 @@
     if (viewObserver) {
       viewObserver.disconnect();
     }
-    
+
     viewObserver = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting && entry.intersectionRatio >= 0.5) {
@@ -1090,21 +1084,21 @@
     for (let i = 0; i < particleCount; i++) {
       const particle = document.createElement('div');
       particle.classList.add('particle');
-      
+
       // Random size between 1px and 3px
       const size = Math.random() * 2 + 1;
       particle.style.width = `${size}px`;
       particle.style.height = `${size}px`;
-      
+
       // Random position
       particle.style.left = `${Math.random() * 100}%`;
       particle.style.top = `${Math.random() * 100}%`;
-      
+
       // Random animation duration and delay
       const duration = Math.random() * 15 + 10;
       const delay = Math.random() * 5;
       particle.style.animation = `float-particle ${duration}s ${delay}s infinite linear`;
-      
+
       particlesContainer.appendChild(particle);
     }
   }
@@ -1147,7 +1141,7 @@ function scrollToSharedPost() {
 // Share Function
 function handleShare(postId, title) {
   const postUrl = `${window.location.origin}${window.location.pathname}?post=${postId}`;
-  
+
   if (navigator.share) {
     navigator.share({
       title: "HSTU Diary - " + title,
@@ -1178,7 +1172,7 @@ function handleShare(postId, title) {
     setupEventListeners();
     startTitleAnimation();
     initViewObserver();
-    
+
     // Check online status on load
     if (!navigator.onLine) {
       showOfflinePopup();
@@ -1293,7 +1287,7 @@ function handleShare(postId, title) {
   function setupEventListeners() {
     // Search input
     searchInput.addEventListener('input', renderPosts);
-    
+
     // Filter buttons
     filterButtons.forEach(btn => {
       btn.addEventListener('click', () => {
@@ -1303,7 +1297,7 @@ function handleShare(postId, title) {
         renderPosts();
       });
     });
-    
+
     // Bookmark button
     if (bookmarkBtn) {
       bookmarkBtn.addEventListener('click', () => {
@@ -1312,7 +1306,7 @@ function handleShare(postId, title) {
         renderPosts();
       });
     }
-    
+
     // Weekly popular button
     if (weeklyPopularBtn) {
       weeklyPopularBtn.addEventListener('click', () => {
@@ -1321,32 +1315,32 @@ function handleShare(postId, title) {
         renderPosts();
       });
     }
-    
+
     // Lightbox
     lightboxClose.addEventListener('click', () => {
       lightbox.classList.remove('active');
     });
-    
+
     // Close lightbox when clicking outside image
     lightbox.addEventListener('click', (e) => {
       if (e.target === lightbox) {
         lightbox.classList.remove('active');
       }
     });
-    
+
     // Close lightbox with Escape key
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape' && lightbox.classList.contains('active')) {
         lightbox.classList.remove('active');
       }
     });
-    
+
     // Network status events
     window.addEventListener('offline', () => {
       showOfflinePopup();
       hideReactions();
     });
-    
+
     window.addEventListener('online', () => {
       hideOfflinePopup();
       showReactions();
@@ -1395,14 +1389,14 @@ scrollToSharedPost();
       .filter(post => new Date(post.createdAt) > twoHoursAgo)
       .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
       .slice(0, 3);
-    
+
     let filteredPosts = posts.filter(post => {
       // Filter by search term (includes hidden tags)
       const matchesSearch = 
         post.title.toLowerCase().includes(searchTerm) ||
         post.content.toLowerCase().includes(searchTerm) ||
         (post.tags && post.tags.some(tag => tag.toLowerCase().includes(searchTerm)));
-      
+
       // Filter by type or special filters
       let matchesType = true;
       if (currentFilter === 'bookmark') {
@@ -1413,40 +1407,40 @@ scrollToSharedPost();
       } else if (currentFilter !== 'all') {
         matchesType = post.type === currentFilter;
       }
-      
+
       // Filter by new posts (only show the 3 newest from last hour if filter is on)
       const isNew = newPosts.some(newPost => newPost.id === post.id);
       const matchesNewFilter = !showOnlyNew || isNew;
-      
+
       return matchesSearch && matchesType && matchesNewFilter;
     });
-    
+
     // Sort based on filter
     if (currentFilter === 'weeklyPopular') {
       filteredPosts.sort((a, b) => (b.views + b.likes) - (a.views + a.likes));
     } else {
       filteredPosts.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
     }
-    
+
     postsContainer.innerHTML = '';
-    
+
     if (filteredPosts.length === 0) {
       emptyState.style.display = 'block';
     } else {
       emptyState.style.display = 'none';
-      
+
       filteredPosts.forEach(post => {
         const postDate = new Date(post.createdAt);
         const isNew = newPosts.some(newPost => newPost.id === post.id);
         const isBookmarked = bookmarkedPosts.includes(post.id);
-        
+
         const postEl = document.createElement('div');
         postEl.className = `post-card ${isNew ? 'new' : ''}`;
         postEl.setAttribute('data-post-id', post.id);
-        
+
         // Format time ago
         const timeAgo = formatTimeAgo(postDate);
-        
+
         postEl.innerHTML = `
           <div class="post-meta">
             <span class="post-type type-${post.type}">
@@ -1515,17 +1509,17 @@ ${post.type === 'news' ? '<i class="bi bi-newspaper"></i>' : ''}
             </button>
           </div>
         `;
-        
+
         postsContainer.appendChild(postEl);
       });
-      
+
       // Add event listeners to reaction buttons
       document.querySelectorAll('.reaction-btn').forEach(btn => {
         if (btn.dataset.action) { // Only like/dislike buttons
           btn.addEventListener('click', handleReaction);
         }
       });
-      
+
       // Add event listeners to share buttons
       document.querySelectorAll('.share-btn').forEach(btn => {
         btn.addEventListener('click', (e) => {
@@ -1534,14 +1528,14 @@ ${post.type === 'news' ? '<i class="bi bi-newspaper"></i>' : ''}
           handleShare(postId, title);
         });
       });
-      
+
       // Add event listeners to images for lightbox
       document.querySelectorAll('.post-image').forEach(img => {
         img.addEventListener('click', (e) => {
           showLightbox(e.currentTarget.dataset.img);
         });
       });
-      
+
       // Observe posts for view tracking
       document.querySelectorAll('.post-card').forEach(card => {
         const postId = card.getAttribute('data-post-id');
@@ -1561,22 +1555,22 @@ ${post.type === 'news' ? '<i class="bi bi-newspaper"></i>' : ''}
     const postId = e.currentTarget.dataset.id;
     const action = e.currentTarget.dataset.action;
     const currentReaction = userReactions[postId];
-    
+
     // If clicking the same reaction again, remove it
     if (currentReaction === action) {
       removeReaction(postId, action);
       return;
     }
-    
+
     // If user already reacted differently, first remove that reaction
     if (currentReaction && currentReaction !== action) {
       removeReaction(postId, currentReaction);
     }
-    
+
     // Add new reaction
     addReaction(postId, action);
   }
-  
+
   function addReaction(postId, action) {
     // Update UI immediately
     const btn = document.querySelector(`.reaction-btn[data-id="${postId}"][data-action="${action}"]`);
@@ -1587,14 +1581,14 @@ ${post.type === 'news' ? '<i class="bi bi-newspaper"></i>' : ''}
           b.classList.remove('active');
         }
       });
-      
+
       // Set new reaction UI
       btn.classList.add('active');
-      
+
       // Update counts
       const countEl = btn.querySelector(`.${action}-count`);
       countEl.textContent = parseInt(countEl.textContent) + 1;
-      
+
       // Update opposite count if switching reactions
       const oppositeAction = action === 'like' ? 'dislike' : 'like';
       const oppositeBtn = document.querySelector(`.reaction-btn[data-id="${postId}"][data-action="${oppositeAction}"]`);
@@ -1602,35 +1596,35 @@ ${post.type === 'news' ? '<i class="bi bi-newspaper"></i>' : ''}
         const oppositeCountEl = oppositeBtn.querySelector(`.${oppositeAction}-count`);
         oppositeCountEl.textContent = parseInt(oppositeCountEl.textContent) - 1;
       }
-      
+
       // Update local state
       userReactions[postId] = action;
       localStorage.setItem('userReactions', JSON.stringify(userReactions));
-      
+
       // Update Firebase
       database.ref(`userReactions/${userId}/${postId}`).set(action);
       database.ref(`posts/${postId}/${action}s`).transaction(current => (current || 0) + 1);
-      
+
       // If switching reactions, decrement the opposite count in Firebase
       if (userReactions[postId] === oppositeAction) {
         database.ref(`posts/${postId}/${oppositeAction}s`).transaction(current => (current || 0) - 1);
       }
     }
   }
-  
+
   function removeReaction(postId, action) {
     // Update UI immediately
     const btn = document.querySelector(`.reaction-btn[data-id="${postId}"][data-action="${action}"]`);
     if (btn) {
       btn.classList.remove('active');
-      
+
       const countEl = btn.querySelector(`.${action}-count`);
       countEl.textContent = parseInt(countEl.textContent) - 1;
-      
+
       // Update local state
       delete userReactions[postId];
       localStorage.setItem('userReactions', JSON.stringify(userReactions));
-      
+
       // Update Firebase
       database.ref(`userReactions/${userId}/${postId}`).remove();
       database.ref(`posts/${postId}/${action}s`).transaction(current => (current || 0) - 1);
