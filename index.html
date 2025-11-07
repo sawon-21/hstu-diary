@@ -827,7 +827,7 @@
 </button>
         <a href="info-preview.html" class="info-link">
   <i class="bi bi-info-circle-fill"></i>
-  <span class="d-none d-md-inline"></span>
+  <span class="d-none d-md-inline">Info</span>
 </a>
       </div>
     </div>
@@ -959,7 +959,13 @@
       });
     });
 
-
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('sw.js')
+          .then(() => console.log('ServiceWorker registration successful'))
+          .catch(err => console.log('ServiceWorker registration failed:', err));
+      });
+    }
 </script>
 
 <!-- Firebase SDK -->
@@ -1249,29 +1255,26 @@ function handleShare(postId, title) {
 
   // Load posts from Firebase or localStorage
   function loadPosts() {
-    if (navigator.onLine) {
-      database.ref('posts').on('value', (snapshot) => {
-        const data = snapshot.val();
-        if (data) {
-          localStorage.setItem('offlinePosts', JSON.stringify(data));
-          posts = formatPosts(data);
-          renderPosts();
-        } else {
-          posts = [];
-          renderPosts();
-        }
-      });
+  // সবসময় অনলাইন ডেটা ব্যবহার করো
+  database.ref('posts').on('value', (snapshot) => {
+    const data = snapshot.val();
+    if (data) {
+      posts = formatPosts(data);
+      renderPosts();
     } else {
-      const offlineData = localStorage.getItem('offlinePosts');
-      if (offlineData) {
-        posts = formatPosts(JSON.parse(offlineData));
-        renderPosts();
-      } else {
-        posts = [];
-        renderPosts();
-      }
+      posts = [];
+      renderPosts();
     }
-  }
+  }, (error) => {
+    console.error("Firebase Error:", error);
+    postsContainer.innerHTML = `
+      <div class="empty-state">
+        <i class="bi bi-wifi-off"></i>
+        <h4 class="mt-3">Unable to load posts</h4>
+        <p class="text-muted">Check your internet connection</p>
+      </div>`;
+  });
+}
 
   function formatPosts(data) {
     return Object.keys(data).map(key => ({
