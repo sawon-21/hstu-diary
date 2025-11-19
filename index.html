@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>HSTU Diary </title>
+  <title>SASTC Diary </title>
     <meta name="theme-color" content="#121212" />
-  <meta name="description" content="HSTU DIARY" />
+  <meta name="description" content="SASTC DIARY" />
   <link rel="manifest" href="manifest.json" />
   <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-DXNDZM5F51"></script>
@@ -45,7 +45,7 @@
     }
 
     body {
-      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+      background: #F3F3F3;
       color: white;
       font-family: 'Hind Siliguri', sans-serif;
       line-height: 1.6;
@@ -68,7 +68,7 @@
       font-size:17px;
     }
     .header {
-      background: rgba(26, 26, 46, 0.8);
+      background: #404751;
       border-bottom: 1px solid rgba(255,255,255,0.1);
       padding: 1rem 0;
       top: 0;
@@ -96,7 +96,7 @@
     }
 
     .post-card {
-      background: rgba(31, 41, 55, 0.7);
+      background: #0f131b;
       border-radius: 16px;
       padding: 24px;
       margin-bottom: 24px;
@@ -111,8 +111,8 @@
     .post-card:hover {
       transform: translateY(-5px);
       box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
-      border-color: rgba(139, 92, 246, 0.5);
-      background: rgba(31, 41, 55, 0.9);
+      border-color: blue;
+      background: #0f131b;
     }
 
     .post-card.new::before {
@@ -125,7 +125,7 @@
       background: red;
     }
      .post-card.new {
-      background: rgba(108, 92, 231, 0.1);
+      background: #000035;
     }   
     .post-card.new::after {
       content: 'LATEST';
@@ -140,7 +140,7 @@
       font-weight: bold;
       transform: rotate(45deg);
       padding: 2px 0;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+      box-shadow: 0 2px 10px yellow;
       z-index: 1;
     }
 
@@ -433,8 +433,8 @@
       background: rgba(255,255,255,0.1);
       border: none;
       color: white;
-      border-radius: 12px;
-      padding: 12px 20px;
+      border-radius: 20px;
+      padding: 2px 20px;
       width: 100%;
       max-width: 400px;
       transition: all 0.3s;
@@ -444,18 +444,17 @@
     }
 
     .search-box:focus {
-      background: rgba(255,255,255,0.2);
+      background: #131313;
       color: white;
-      box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.3);
-      border: 1px solid rgba(139, 92, 246, 0.5);
+      box-shadow: 0 0 0 1px #3B82F6;
       outline: none;
     }
 
     .filter-btn {
-      background: rgba(255,255,255,0.1);
+      background: #F3F3F3;
       border: none;
-      color: white;
-      border-radius: 20px;
+      color: #131313;
+      border-radius: 15px;
       padding: 8px 15px;
       display: flex;
       align-items: center;
@@ -464,20 +463,20 @@
       transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       cursor: pointer;
       font-weight: 800;
-      backdrop-filter: blur(5px);
-      border: 1px solid rgba(255,255,255,0.1);
+      backdrop-filter: blur(50px);
+      border: 1px solid #131313;
     }
 
     .filter-btn:hover {
-      background: #0d6efd;
+      background: #0d6e99;
       transform: translateY(-2px);
       box-shadow: 0 4px 8px rgba(0,0,0,0.2);
     }
 
     .filter-btn.active {
       background: #0d6efd;
-      box-shadow: 0 4px 6px -1px rgba(13,110,253,255);
-      border-color: rgba(13,110,253,255);
+      box-shadow: 2 4px 6px -1px rgba(13,110,253,255);
+      border-color: #131313;
     }
 
     .filters-row-wrapper {
@@ -591,11 +590,11 @@
 
     /* Skeleton Loading */
     .skeleton {
-      background: linear-gradient(90deg, rgba(255,255,255,0.1) 25%, rgba(255,255,255,0.15) 50%, rgba(255,255,255,0.1) 75%);
+      background: linear-gradient(90deg, rgba(255,255,255,0.1) 25%, #0f131b 50%, rgba(255,255,255,0.1) 75%);
       background-size: 200% 100%;
       animation: shimmer 1.5s infinite;
       border-radius: 8px;
-      backdrop-filter: blur(5px);
+      backdrop-filter: blur(50px);
       border: 1px solid rgba(255,255,255,0.1);
     }
 
@@ -886,7 +885,7 @@
 <div id="offlinePopup" style="
   display:none;
   position:fixed;
-  top:20px;
+  top:180px;
   left:50%;
   transform:translateX(-50%);
   background:rgba(255,77,79,0.8);
@@ -901,7 +900,7 @@
   align-items:center;
   gap:8px;
 ">
-  <i class="bi bi-wifi-off" style="font-size:1.2rem;"></i> 
+  <i class="bi bi-wifi-off" style="font-size:1.9rem;"></i> 
   You are offline.
 </div>
   <!-- Empty State -->
@@ -916,7 +915,7 @@
 
     const promptHTML = `
       <div class="install-prompt">
-        <h1 class="mb-3"><span style="color:#e17055">HSTU DIARY </span></h1>
+        <h1 class="mb-3"><span style="color:#e17055"> SASTC DIARY </span></h1>
         <div class="filter-bar">
           <div class="type-classes"><i class="bi bi-journal-bookmark"></i> Classes</div>
           <div class="type-notice"><i class="bi bi-megaphone"></i> Notice</div>
@@ -1150,7 +1149,7 @@ function handleShare(postId, title) {
 
   if (navigator.share) {
     navigator.share({
-      title: "HSTU Diary - " + title,
+      title: "SASTC Diary - " + title,
       text: title,
       url: postUrl
     }).then(() => {
@@ -1209,7 +1208,7 @@ function handleShare(postId, title) {
   // Title animation
   function startTitleAnimation() {
     const texts = [
-      "HSTU Diary",
+      "SASTC Diary",
       "Latest Notice Classes ✰",
       "Always Up to date ↑",
       "Never Miss an Update ",
